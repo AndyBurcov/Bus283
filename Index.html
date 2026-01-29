@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Автобус 283</title>
+    <style>
+        :root { --bg: #121212; --card: #1e1e1e; --text: #e0e0e0; --accent: #bb86fc; --border: #333; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; }
+        .container { max-width: 600px; margin: auto; background: var(--card); border-radius: 12px; overflow: hidden; }
+        header { background: #252525; padding: 25px 15px; text-align: center; border-bottom: 2px solid var(--accent); }
+        h1 { margin: 0; font-size: 2.2rem; font-style: italic; text-transform: uppercase; letter-spacing: 2px; color: white; margin-bottom: 20px; }
+        .quote-box { display: inline-block; background: #2a2a2a; padding: 15px 25px; border-radius: 40px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6); border: 1px solid #444; max-width: 85%; }
+        #bible-quote { font-style: italic; font-weight: bold; font-size: 0.95rem; color: white; margin: 0; line-height: 1.5; }
+        #timer-block { background: #2a2a2a; padding: 15px; text-align: center; display: none; border-bottom: 1px solid var(--border); }
+        #countdown { font-size: 1.6rem; color: var(--accent); font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px 5px; text-align: center; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); font-size: 0.85rem; }
+        td { cursor: pointer; }
+        .selected { background: #3700b3 !important; }
+        .btn-cal { display: block; margin: 10px auto; padding: 10px 20px; background: var(--accent); color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: none; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>АВТОБУС 283</h1>
+        <div class="quote-box">
+            <div id="bible-quote">Слово про Спасителя...</div>
+        </div>
+    </header>
+    <div id="timer-block">
+        <span id="countdown">00:00:00</span>
+        <button class="btn-cal" id="calBtn" onclick="addToCalendar()">📅 Нагадати в Календарі</button>
+    </div>
+    <table>
+        <thead><tr><th>Пн — Пт</th><th>Субота</th><th>Неділя</th></tr></thead>
+        <tbody>
+            <tr><td onclick="selectTrip('06:00', this)">06:00 ➔ 06:30</td><td onclick="selectTrip('06:00', this)">06:00 ➔ 06:40</td><td onclick="selectTrip('06:30', this)">06:30 ➔ 07:10</td></tr>
+            <tr><td onclick="selectTrip('06:30', this)">06:30 ➔ 07:10</td><td onclick="selectTrip('06:50', this)">06:50 ➔ 07:30</td><td onclick="selectTrip('07:30', this)">07:30 ➔ 08:10</td></tr>
+            <tr><td onclick="selectTrip('07:00', this)">07:00 ➔ 07:40</td><td onclick="selectTrip('07:50', this)">07:50 ➔ 08:30</td><td onclick="selectTrip('08:50', this)">08:50 ➔ 09:30</td></tr>
+            <tr><td onclick="selectTrip('07:40', this)">07:40 ➔ 08:20</td><td onclick="selectTrip('08:50', this)">08:50 ➔ 09:30</td><td onclick="selectTrip('10:30', this)">10:30 ➔ 11:30</td></tr>
+            <tr><td onclick="selectTrip('08:10', this)">08:10 ➔ 08:45</td><td onclick="selectTrip('09:40', this)">09:40 ➔ 10:30</td><td onclick="selectTrip('12:30', this)">12:30 ➔ 13:30</td></tr>
+            <tr><td onclick="selectTrip('09:00', this)">09:00 ➔ 09:40</td><td onclick="selectTrip('10:30', this)">10:30 ➔ 11:30</td><td onclick="selectTrip('14:30', this)">14:30 ➔ 15:30</td></tr>
+            <tr><td onclick="selectTrip('10:30', this)">10:30 ➔ 11:00</td><td onclick="selectTrip('11:30', this)">11:30 ➔ 12:30</td><td onclick="selectTrip('16:40', this)">16:40 ➔ 17:20</td></tr>
+            <tr><td onclick="selectTrip('12:00', this)">12:00 ➔ 12:30</td><td onclick="selectTrip('12:30', this)">12:30 ➔ 13:30</td><td onclick="selectTrip('18:00', this)">18:00 ➔ 18:40</td></tr>
+            <tr><td onclick="selectTrip('13:30', this)">13:30 ➔ 14:00</td><td onclick="selectTrip('13:30', this)">13:30 ➔ 14:30</td><td onclick="selectTrip('19:40', this)">19:40 ➔ 20:10</td></tr>
+            <tr><td onclick="selectTrip('14:30', this)">14:30 ➔ 15:00</td><td onclick="selectTrip('14:30', this)">14:30 ➔ 15:30</td><td>-</td></tr>
+            <tr><td onclick="selectTrip('15:30', this)">15:30 ➔ 16:00</td><td onclick="selectTrip('15:30', this)">15:30 ➔ 16:10</td><td>-</td></tr>
+            <tr><td onclick="selectTrip('16:30', this)">16:30 ➔ 17:00</td><td onclick="selectTrip('16:40', this)">16:40 ➔ 17:20</td><td>-</td></tr>
+            <tr><td onclick="selectTrip('17:30', this)">17:30 ➔ 18:00</td><td onclick="selectTrip('18:00', this)">18:00 ➔ 18:40</td><td>-</td></tr>
+            <tr><td onclick="selectTrip('18:00', this)">18:00 ➔ 18:30</td><td onclick="selectTrip('19:40', this)">19:40 ➔ 20:10</td><td>-</td></tr>
+            <tr><td onclick="selectTrip('19:40', this)">19:40 ➔ 20:10</td><td>-</td><td>-</td></tr>
+        </tbody>
+    </table>
+</div>
+<script>
+    const bibleVerses = [
+        "«Промовляє до нього Ісус: Я — дорога, і правда, і життя. До Отця не приходить ніхто, якщо не через Мене» (Івана 14:6)",
+        "«І нема ні в кім іншім спасіння. Бо під небом нема іншого Ймення, даного людям, що ним би спастися ми мали» (Дії 4:12)",
+        "«Бо так полюбив Бог світ, що віддав Сина Свого Однородженого, щоб кожен, хто вірує в Нього, не загинув, а мав життя вічне» (Івана 3:16)",
+        "«Бо заплата за гріх — смерть, а дар Божий — життя вічне в Христі Ісусі, Господі нашім» (Римлян 6:23)",
+        "«Бо коли ти устами своїми визнаватимеш Ісуса за Господа, і серцем своїм віруватимеш, що Бог воскресив Його з мертвих, то спасешся» (Римлян 10:9)",
+        "«Бо один є Бог, і один Посередник між Богом та людьми, — Людина Христос Ісус» (1 Тимофія 2:5)",
+        "«А всім, що Його прийняли, їм владу дало дітьми Божими стати, тим, що вірять у Ймення Його» (Івана 1:12)",
+        "«Хто вірує в Сина, той має вічне життя; а хто в Сина не вірує, той життя не побачить» (Івана 3:36)"
+    ];
+
+    window.onload = function() {
+        const randomIndex = Math.floor(Math.random() * bibleVerses.length);
+        document.getElementById('bible-quote').innerText = bibleVerses[randomIndex];
+    };
+
+    let activeTime = "";
+    function selectTrip(time, el) {
+        activeTime = time;
+        document.querySelectorAll('td').forEach(t => t.classList.remove('selected'));
+        el.classList.add('selected');
+        document.getElementById('timer-block').style.display = 'block';
+        document.getElementById('calBtn').style.display = 'inline-block';
+        updateTimer(time);
+    }
+    function updateTimer(time) {
+        const [h, m] = time.split(':');
+        let target = new Date(); target.setHours(parseInt(h), parseInt(m), 0);
+        if (target < new Date()) target.setDate(target.getDate() + 1);
+        if (window.tInt) clearInterval(window.tInt);
+        window.tInt = setInterval(() => {
+            const diff = target - new Date();
+            if (diff <= 0) { clearInterval(window.tInt); alert("Час на вихід!"); return; }
+            const hrs = Math.floor(diff/3600000).toString().padStart(2,'0');
+            const mns = Math.floor((diff%3600000)/60000).toString().padStart(2,'0');
+            const scs = Math.floor((diff%60000)/1000).toString().padStart(2,'0');
+            document.getElementById('countdown').innerText = hrs+":"+mns+":"+scs;
+        }, 1000);
+    }
+    function addToCalendar() {
+        const [h, m] = activeTime.split(':');
+        const now = new Date();
+        const start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m);
+        const end = new Date(start.getTime() + 20*60000);
+        const fmt = (d) => d.toISOString().replace(/-|:|\.\d\d\d/g, "");
+        const url = `data:text/calendar;charset=utf8,BEGIN:VCALENDAR%0AVERSION:2.0%0ABEGIN:VEVENT%0ADTSTART:${fmt(start)}%0ADTEND:${fmt(end)}%0ASUMMARY:Автобус 283%0AEND:VEVENT%0AEND:VCALENDAR`;
+        window.open(url);
+    }
+</script>
+</body>
+</html>
