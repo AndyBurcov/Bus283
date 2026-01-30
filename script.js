@@ -1,4 +1,4 @@
-const SITE_VERSION = "1.9"; 
+const SITE_VERSION = "2.0"; 
 
 const schedule = [
     { wd: "06:00 — 06:30", we: "06:30 — 07:10" },
