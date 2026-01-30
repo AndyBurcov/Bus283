@@ -13,54 +13,27 @@
         body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; padding-bottom: 40px; }
         .container { max-width: 600px; margin: auto; background: var(--card); border-radius: 12px; overflow: hidden; }
         header { background: #252525; padding: 25px 15px; text-align: center; border-bottom: 2px solid var(--accent); }
-        h1 { margin: 0; font-size: 2.2rem; font-style: italic; text-transform: uppercase; letter-spacing: 2px; color: white; margin-bottom: 20px; }
+        h1 { margin: 0; font-size: 2.2rem; font-style: italic; text-transform: uppercase; letter-spacing: 2px; color: white; margin-bottom: 15px; }
         
-        /* Оновлений блок цитат: прибрано обмеження, додано м'якість */
-        .quote-box { 
-            display: inline-block; 
-            background: #2a2a2a; 
-            padding: 15px 20px; 
-            border-radius: 25px; 
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6); 
-            border: 1px solid #444; 
-            width: 90%; /* Займає більше місця для тексту */
-            box-sizing: border-box;
-            word-wrap: break-word; /* Щоб довгі слова не вилазили */
-        }
-        #bible-quote { 
-            font-style: italic; 
-            font-weight: bold; 
-            font-size: 0.95rem; 
-            color: white; 
-            margin: 0; 
-            line-height: 1.4; 
-            white-space: normal; /* Дозволяє тексту переноситись на нові рядки */
-        }
+        .quote-box { display: inline-block; background: #2a2a2a; padding: 12px 20px; border-radius: 20px; border: 1px solid #444; max-width: 90%; margin-bottom: 10px; }
+        #bible-quote { font-style: italic; font-size: 0.9rem; color: #ccc; margin: 0; line-height: 1.4; }
+        
+        /* Секція погоди та побажань */
+        .weather-wish-box { padding: 10px; background: #222; border-bottom: 1px solid var(--border); font-size: 0.9rem; text-align: center; }
+        #weather-info { font-weight: bold; color: var(--accent); margin-bottom: 5px; }
+        #wish-text { color: white; font-style: normal; }
 
         #timer-block { background: #2a2a2a; padding: 15px; text-align: center; display: none; border-bottom: 1px solid var(--border); }
         #countdown { font-size: 1.6rem; color: var(--accent); font-weight: bold; }
+        
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 12px 5px; text-align: center; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); font-size: 0.85rem; }
-        td { cursor: pointer; }
+        td { cursor: pointer; color: #fff; }
         .selected { background: #3700b3 !important; }
-        
-        .btn-cal, .btn-save { 
-            display: block; margin: 10px auto; padding: 12px 20px; 
-            background: var(--accent); color: #000; border: none; 
-            border-radius: 8px; font-weight: bold; cursor: pointer; width: 85%;
-        }
-        .btn-cal { display: none; }
+        .btn-cal { display: block; margin: 10px auto; padding: 10px 20px; background: var(--accent); color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: none; }
 
-        .save-box {
-            margin: 20px auto;
-            max-width: 580px;
-            background: #2a2a2a;
-            border: 1px solid var(--accent);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-        }
-        .save-box p { margin: 0 0 10px 0; color: white; font-size: 0.9rem; }
+        .pwa-info-box { margin: 20px auto; max-width: 580px; background: #2a2a2a; border: 1px solid var(--accent); border-radius: 12px; padding: 15px; text-align: center; }
+        .pwa-info-box p { margin: 0; font-size: 0.9rem; color: white; }
     </style>
 </head>
 <body>
@@ -71,68 +44,79 @@
         <div class="quote-box">
             <div id="bible-quote">Завантаження...</div>
         </div>
+        
+        <div class="weather-wish-box">
+            <div id="weather-info">🌤 Оновлення погоди...</div>
+            <div id="wish-text">Гарної поїздки!</div>
+        </div>
     </header>
+
     <div id="timer-block">
         <span id="countdown">00:00:00</span>
-        <button class="btn-cal" id="calBtn" onclick="addToCalendar()">📅 Нагадати в Календарі</button>
+        <button class="btn-cal" id="calBtn" onclick="addToCalendar()">📅 Нагадати</button>
     </div>
+
     <table>
         <thead><tr><th>Пн — Пт</th><th>Субота</th><th>Неділя</th></tr></thead>
         <tbody>
-            <tr><td onclick="selectTrip('06:00', this)">06:00 ➔ 06:30</td><td onclick="selectTrip('06:00', this)">06:00 ➔ 06:40</td><td onclick="selectTrip('06:30', this)">06:30 ➔ 07:10</td></tr>
-            <tr><td onclick="selectTrip('06:30', this)">06:30 ➔ 07:10</td><td onclick="selectTrip('06:50', this)">06:50 ➔ 07:30</td><td onclick="selectTrip('07:30', this)">07:30 ➔ 08:10</td></tr>
-            <tr><td onclick="selectTrip('07:00', this)">07:00 ➔ 07:40</td><td onclick="selectTrip('07:50', this)">07:50 ➔ 08:30</td><td onclick="selectTrip('08:50', this)">08:50 ➔ 09:30</td></tr>
-            <tr><td onclick="selectTrip('07:40', this)">07:40 ➔ 08:20</td><td onclick="selectTrip('08:50', this)">08:50 ➔ 09:30</td><td onclick="selectTrip('10:30', this)">10:30 ➔ 11:30</td></tr>
-            <tr><td onclick="selectTrip('08:10', this)">08:10 ➔ 08:45</td><td onclick="selectTrip('09:40', this)">09:40 ➔ 10:30</td><td onclick="selectTrip('12:30', this)">12:30 ➔ 13:30</td></tr>
-            <tr><td onclick="selectTrip('09:00', this)">09:00 ➔ 09:40</td><td onclick="selectTrip('10:30', this)">10:30 ➔ 11:30</td><td onclick="selectTrip('14:30', this)">14:30 ➔ 15:30</td></tr>
-            <tr><td onclick="selectTrip('10:30', this)">10:30 ➔ 11:00</td><td onclick="selectTrip('11:30', this)">11:30 ➔ 12:30</td><td onclick="selectTrip('16:40', this)">16:40 ➔ 17:20</td></tr>
-            <tr><td onclick="selectTrip('12:00', this)">12:00 ➔ 12:30</td><td onclick="selectTrip('12:30', this)">12:30 ➔ 13:30</td><td onclick="selectTrip('18:00', this)">18:00 ➔ 18:40</td></tr>
-            <tr><td onclick="selectTrip('13:30', this)">13:30 ➔ 14:00</td><td onclick="selectTrip('13:30', this)">13:30 ➔ 14:30</td><td onclick="selectTrip('19:40', this)">19:40 ➔ 20:10</td></tr>
-            <tr><td onclick="selectTrip('14:30', this)">14:30 ➔ 15:00</td><td onclick="selectTrip('14:30', this)">14:30 ➔ 15:30</td><td>-</td></tr>
-            <tr><td onclick="selectTrip('15:30', this)">15:30 ➔ 16:00</td><td onclick="selectTrip('15:30', this)">15:30 ➔ 16:10</td><td>-</td></tr>
-            <tr><td onclick="selectTrip('16:30', this)">16:30 ➔ 17:00</td><td onclick="selectTrip('16:40', this)">16:40 ➔ 17:20</td><td>-</td></tr>
-            <tr><td onclick="selectTrip('17:30', this)">17:30 ➔ 18:00</td><td onclick="selectTrip('18:00', this)">18:00 ➔ 18:40</td><td>-</td></tr>
-            <tr><td onclick="selectTrip('18:00', this)">18:00 ➔ 18:30</td><td onclick="selectTrip('19:40', this)">19:40 ➔ 20:10</td><td>-</td></tr>
-            <tr><td onclick="selectTrip('19:40', this)">19:40 ➔ 20:10</td><td>-</td><td>-</td></tr>
+            <tr><td onclick="selectTrip('06:00', this)">06:00 — 06:30</td><td onclick="selectTrip('06:00', this)">06:00 — 06:40</td><td onclick="selectTrip('06:30', this)">06:30 — 07:10</td></tr>
+            <tr><td onclick="selectTrip('06:30', this)">06:30 — 07:10</td><td onclick="selectTrip('06:50', this)">06:50 — 07:30</td><td onclick="selectTrip('07:30', this)">07:30 — 08:10</td></tr>
+            <tr><td onclick="selectTrip('07:00', this)">07:00 — 07:40</td><td onclick="selectTrip('07:50', this)">07:50 — 08:30</td><td onclick="selectTrip('08:50', this)">08:50 — 09:30</td></tr>
+            <tr><td onclick="selectTrip('07:40', this)">07:40 — 08:20</td><td onclick="selectTrip('08:50', this)">08:50 — 09:30</td><td onclick="selectTrip('10:30', this)">10:30 — 11:30</td></tr>
+            <tr><td onclick="selectTrip('08:10', this)">08:10 — 08:45</td><td onclick="selectTrip('09:40', this)">09:40 — 10:30</td><td onclick="selectTrip('12:30', this)">12:30 — 13:30</td></tr>
+            <tr><td onclick="selectTrip('09:00', this)">09:00 — 09:40</td><td onclick="selectTrip('10:30', this)">10:30 — 11:30</td><td onclick="selectTrip('14:30', this)">14:30 — 15:30</td></tr>
+            <tr><td onclick="selectTrip('10:30', this)">10:30 — 11:00</td><td onclick="selectTrip('11:30', this)">11:30 — 12:30</td><td onclick="selectTrip('16:40', this)">16:40 — 17:20</td></tr>
+            <tr><td onclick="selectTrip('12:00', this)">12:00 — 12:30</td><td onclick="selectTrip('12:30', this)">12:30 — 13:30</td><td onclick="selectTrip('18:00', this)">18:00 — 18:40</td></tr>
+            <tr><td onclick="selectTrip('13:30', this)">13:30 — 14:00</td><td onclick="selectTrip('13:30', this)">13:30 — 14:30</td><td onclick="selectTrip('19:40', this)">19:40 — 20:10</td></tr>
+            <tr><td onclick="selectTrip('14:30', this)">14:30 — 15:00</td><td onclick="selectTrip('14:30', this)">14:30 — 15:30</td><td>-</td></tr>
+            <tr><td onclick="selectTrip('15:30', this)">15:30 — 16:00</td><td onclick="selectTrip('15:30', this)">15:30 — 16:10</td><td>-</td></tr>
+            <tr><td onclick="selectTrip('16:30', this)">16:30 — 17:00</td><td onclick="selectTrip('16:40', this)">16:40 — 17:20</td><td>-</td></tr>
+            <tr><td onclick="selectTrip('17:30', this)">17:30 — 18:00</td><td onclick="selectTrip('18:00', this)">18:00 — 18:40</td><td>-</td></tr>
+            <tr><td onclick="selectTrip('18:00', this)">18:00 — 18:30</td><td onclick="selectTrip('19:40', this)">19:40 — 20:10</td><td>-</td></tr>
+            <tr><td onclick="selectTrip('19:40', this)">19:40 — 20:10</td><td>-</td><td>-</td></tr>
         </tbody>
     </table>
 </div>
 
-<div class="save-box">
-    <p>Збережіть посилання, щоб не загубити розклад:</p>
-    <button class="btn-save" onclick="copyLink()">ЗБЕРЕГТИ ПОСИЛАННЯ</button>
+<div class="pwa-info-box">
+    <p>📱 Натисніть <b>"Додати на головний екран"</b>, щоб іконка 283 з'явилася в меню.</p>
 </div>
 
 <script>
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./sw.js').catch(err => console.log(err));
-        });
-    }
-
     const bibleVerses = [
-        "«Промовляє до нього Ісус: Я — дорога, і правда, і життя. До Отця не приходить ніхто, якщо не через Мене» (Івана 14:6)",
-        "«І нема ні в кім іншім спасіння. Бо під небом нема іншого Ймення, даного людям, що ним би спастися ми мали» (Дії 4:12)",
-        "«Бо так полюбив Бог світ, що віддав Сина Свого Однородженого, щоб кожен, хто вірує в Нього, не загинув, а мав життя вічне» (Івана 3:16)",
-        "«Бо заплата за гріх — смерть, а дар Божий — життя вічне в Христі Ісусі, Господі нашім» (Римлян 6:23)",
-        "«Бо коли ти устами своїми визнаватимеш Ісуса за Господа, і серцем своїм віруватимеш, що Бог воскресив Його з мертвих, то спасешся» (Римлян 10:9)",
-        "«Бо один є Бог, і один Посередник між Богом та людьми, — Людина Христос Ісус» (1 Тимофія 2:5)",
-        "«А всім, що Його прийняли, їм владу дало дітьми Божими стати, тим, що вірять у Ймення Його» (Івана 1:12)",
-        "«Хто вірує в Сина, той має вічне життя; а хто в Сина не вірує, той життя не побачить» (Івана 3:36)"
+        "«Я — дорога, і правда, і життя...» (Івана 14:6)",
+        "«Бо так полюбив Бог світ, що віддав Сина Свого...» (Івана 3:16)",
+        "«Господь — то мій Пастир, тому в недостатку не буду» (Псалом 22:1)",
+        "«Все можу в Тім, Хто мене підкріпляє — у Христі Ісусі» (Филип'ян 4:13)"
     ];
 
-    window.onload = () => { 
-        document.getElementById('bible-quote').innerText = bibleVerses[Math.floor(Math.random() * bibleVerses.length)]; 
-    };
+    async function fetchWeather() {
+        try {
+            // Запит погоди для Києва (як приклад, можна змінити координати)
+            const response = await fetch('https://api.open-meteo.com/v1/forecast?latitude=50.45&longitude=30.52&current_weather=true');
+            const data = await response.json();
+            const temp = Math.round(data.current_weather.temperature);
+            const code = data.current_weather.weathercode;
+            
+            document.getElementById('weather-info').innerText = `Зараз у місті: ${temp}°C`;
+            
+            let wish = "Бережіть себе та гарної дороги!";
+            if (code > 50) wish = "☔️ Здається, дощить. Не забудьте парасольку та будьте обережні!";
+            else if (temp < 0) wish = "❄️ На вулиці мороз. Одягайтеся тепліше, щоб не застудитися!";
+            else if (temp > 25) wish = "☀️ Сьогодні спекотно. Візьміть із собою пляшечку води.";
+            else if (code === 0) wish = "☀️ Гарна погода для поїздки! Нехай ваш день буде благословенним.";
 
-    function copyLink() {
-        const url = window.location.href;
-        navigator.clipboard.writeText(url).then(() => {
-            alert("Посилання скопійовано! Тепер ви можете вставити його в Telegram, Viber або Нотатки.");
-        }).catch(() => {
-            alert("Помилка копіювання. Просто збережіть адресу сайту в закладки.");
-        });
+            document.getElementById('wish-text').innerText = wish;
+        } catch (e) {
+            document.getElementById('weather-info').innerText = "Гарної вам подорожі!";
+        }
     }
+
+    window.onload = function() {
+        const randomIndex = Math.floor(Math.random() * bibleVerses.length);
+        document.getElementById('bible-quote').innerText = bibleVerses[randomIndex];
+        fetchWeather();
+    };
 
     let activeTime = "";
     function selectTrip(time, el) {
@@ -151,22 +135,12 @@
         if (window.tInt) clearInterval(window.tInt);
         window.tInt = setInterval(() => {
             const diff = target - new Date();
-            if (diff <= 0) { clearInterval(window.tInt); alert("Час на вихід!"); return; }
+            if (diff <= 0) { clearInterval(window.tInt); return; }
             const hrs = Math.floor(diff/3600000).toString().padStart(2,'0');
             const mns = Math.floor((diff%3600000)/60000).toString().padStart(2,'0');
             const scs = Math.floor((diff%60000)/1000).toString().padStart(2,'0');
-            document.getElementById('countdown').innerText = `${hrs}:${mns}:${scs}`;
+            document.getElementById('countdown').innerText = hrs+":"+mns+":"+scs;
         }, 1000);
-    }
-
-    function addToCalendar() {
-        const [h, m] = activeTime.split(':');
-        const now = new Date();
-        const start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m);
-        const end = new Date(start.getTime() + 20*60000);
-        const fmt = (d) => d.toISOString().replace(/-|:|\.\d\d\d/g, "");
-        const url = `data:text/calendar;charset=utf8,BEGIN:VCALENDAR%0AVERSION:2.0%0ABEGIN:VEVENT%0ADTSTART:${fmt(start)}%0ADTEND:${fmt(end)}%0ASUMMARY:Автобус 283%0AEND:VEVENT%0AEND:VCALENDAR`;
-        window.open(url);
     }
 </script>
 </body>
