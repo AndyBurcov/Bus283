@@ -15,14 +15,13 @@
     <style>
         :root { --bg: #121212; --card: #1e1e1e; --text: #e0e0e0; --accent: #bb86fc; --border: #333; }
         
-        /* Фікс білих пробілів та лагів */
         html, body { 
             background: #121212; 
             margin: 0; 
             padding: 0;
             width: 100%;
             overflow-x: hidden;
-            overscroll-behavior-y: contain; /* Забороняє «гумовий» ефект при скролі */
+            overscroll-behavior-y: contain;
         }
 
         body { 
@@ -30,38 +29,55 @@
             color: var(--text); 
             padding-bottom: 60px; 
             min-height: 100vh;
+            /* Плавний градієнт фону */
+            background: linear-gradient(180deg, #2a2a2a 0%, #121212 300px, #121212 100%);
+            background-attachment: fixed;
         }
 
         header { 
             position: fixed; 
             top: 0; left: 0; right: 0; 
             z-index: 1000;
-            background: rgba(18, 18, 18, 0.8); 
-            backdrop-filter: blur(15px); 
-            -webkit-backdrop-filter: blur(15px); 
+            background: rgba(18, 18, 18, 0.7); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px); 
             display: flex;
             align-items: center; justify-content: center;
-            height: 80px; 
+            height: 85px; 
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            transition: height 0.3s;
+            transition: all 0.3s;
         }
 
-        h1 { margin: 0; font-size: 2rem; font-style: italic; text-transform: uppercase; letter-spacing: 2px; color: white; }
+        h1 { margin: 0; font-size: 2.2rem; font-style: italic; text-transform: uppercase; letter-spacing: 2px; color: white; }
         header.scrolled { height: 60px; }
-        header.scrolled h1 { font-size: 1.3rem; }
+        header.scrolled h1 { font-size: 1.4rem; }
 
         .container { 
-            max-width: 600px; 
-            margin: 100px auto 20px auto; 
+            max-width: 580px; 
+            margin: 110px 15px 20px 15px; /* Бокові відступи від країв */
             background: var(--card); 
             border-radius: 12px; 
             overflow: hidden; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             position: relative;
         }
+        /* Адаптація для великих екранів (центрування) */
+        @media (min-width: 610px) {
+            .container { margin-left: auto; margin-right: auto; }
+        }
         
-        .quote-box { background: #2a2a2a; padding: 18px 25px; border-radius: 20px; border: 1px solid #444; margin: 20px auto; width: fit-content; max-width: 90%; text-align: center; }
-        #bible-quote { font-style: italic; font-size: 0.95rem; color: white; line-height: 1.6; }
+        /* Вужча рамка для віршів */
+        .quote-box { 
+            background: #2a2a2a; 
+            padding: 15px 20px; 
+            border-radius: 18px; 
+            border: 1px solid #444; 
+            margin: 20px auto; 
+            width: fit-content; 
+            max-width: 85%; 
+            text-align: center; 
+        }
+        #bible-quote { font-style: italic; font-size: 0.9rem; color: white; line-height: 1.5; }
         
         .weather-wish-box { padding: 10px; text-align: center; margin-bottom: 10px; }
         #weather-info { font-weight: bold; color: var(--accent); margin-bottom: 5px; display: block; }
@@ -116,7 +132,7 @@
         #timer-block.visible { opacity: 1; max-height: 130px; padding: 15px; }
         #countdown { font-size: 1.6rem; color: var(--accent); font-weight: bold; display: block; margin-bottom: 10px; }
         
-        table { width: 100%; border-collapse: collapse; border-top: 2px solid var(--accent); background: var(--card); }
+        table { width: 100%; border-collapse: collapse; border-top: 2px solid var(--accent); }
         th, td { padding: 12px 5px; text-align: center; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); font-size: 0.85rem; }
         .route-label { background: rgba(255, 255, 255, 0.03); color: #888; font-size: 0.75rem; text-transform: uppercase; pointer-events: none; border-right: none; }
         td { cursor: pointer; color: #fff; transition: background 0.2s; }
@@ -124,7 +140,9 @@
 
         .share-btn { display: block; width: 200px; margin: 30px auto; padding: 12px; background: transparent; border: 2px solid var(--accent); color: var(--accent); border-radius: 30px; font-weight: bold; cursor: pointer; text-align: center; }
 
-        .instructions { margin: 30px auto; max-width: 580px; padding: 15px; color: #bbb; line-height: 1.6; border-top: 1px solid var(--border); }
+        /* Розгорнуті підказки */
+        .instructions { margin: 30px 15px; max-width: 580px; padding: 15px; color: #bbb; line-height: 1.6; border-top: 1px solid var(--border); }
+        @media (min-width: 610px) { .instructions { margin-left: auto; margin-right: auto; } }
         .instructions h3 { color: var(--accent); font-size: 1.1rem; margin-bottom: 20px; text-align: center; font-weight: 600; }
         .step { margin-bottom: 12px; background: #1a1a1a; padding: 15px; border-radius: 12px; font-size: 0.85rem; }
         .step b { color: white; }
@@ -160,7 +178,7 @@
     <table>
         <thead><tr><th>Пн — Пт</th><th>Сб — Нд</th></tr></thead>
         <tbody>
-            <tr><td colspan="2" class="route-label" id="label-main">Очікування...</td></tr>
+            <tr><td colspan="2" class="route-label" id="label-main">Завантаження...</td></tr>
         </tbody>
         <tbody id="schedule-body"></tbody>
     </table>
@@ -169,10 +187,10 @@
 <button class="share-btn" onclick="shareApp(); event.stopPropagation()">🔗 ПОДІЛИТИСЯ</button>
 
 <div class="instructions" onclick="event.stopPropagation()">
-    <h3>Як зберегти на екрані?</h3>
-    <div class="step"><b>Android:</b> Три крапки (⋮) → <b>«Додати на головний екран»</b>.</div>
-    <div class="step"><b>iPhone:</b> «Поділитися» → <b>«На початковий екран»</b>.</div>
-    <div class="step"><b>Логотип:</b> Після додавання на екран ви побачите свій логотип.</div>
+    <h3>Як зберегти розклад на телефоні?</h3>
+    <div class="step"><b>Android (Chrome):</b> Натисніть на три крапки (⋮) у правому верхньому куті та оберіть <b>«Додати на головний екран»</b>.</div>
+    <div class="step"><b>iPhone (Safari):</b> Натисніть кнопку «Поділитися» (квадрат зі стрілкою вгору) у нижній панелі та оберіть <b>«На початковий екран»</b>.</div>
+    <div class="step"><b>Як зробити закладку?</b> У налаштуваннях вашого браузера натисніть на <b>зірочку (★)</b> або в меню оберіть <b>«Додати до закладок»</b> для швидкого доступу.</div>
 </div>
 
 <script src="script.js"></script>
