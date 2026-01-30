@@ -13,13 +13,15 @@
         
         body { 
             font-family: -apple-system, sans-serif; 
-            background: var(--bg); 
+            /* Плавний градієнт фону */
+            background: linear-gradient(180deg, #252525 0%, #121212 400px, #121212 100%);
+            background-attachment: fixed;
             color: var(--text); 
             margin: 0; 
             padding-bottom: 50px; 
+            min-height: 100vh;
         }
 
-        /* Адаптивна Glassmorphism шапка */
         header { 
             position: fixed; 
             top: 0; left: 0; right: 0; 
@@ -32,7 +34,7 @@
             justify-content: center;
             transition: all 0.3s ease;
             height: 85px; 
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         h1 { 
@@ -54,6 +56,7 @@
             background: var(--card); 
             border-radius: 12px; 
             overflow: hidden; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
         
         .quote-box { background: #2a2a2a; padding: 15px 20px; border-radius: 20px; border: 1px solid #444; margin: 20px auto; width: fit-content; max-width: 90%; box-sizing: border-box; }
@@ -68,52 +71,26 @@
         
         table { width: 100%; border-collapse: collapse; border-top: 2px solid var(--accent); }
         th, td { padding: 12px 5px; text-align: center; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); font-size: 0.85rem; }
-        td { cursor: pointer; color: #fff; }
+        td { cursor: pointer; color: #fff; transition: background 0.2s; }
         .selected { background: #3700b3 !important; }
 
         .share-btn { display: block; width: 200px; margin: 30px auto; padding: 12px; background: transparent; border: 2px solid var(--accent); color: var(--accent); border-radius: 30px; font-weight: bold; cursor: pointer; text-align: center; }
 
-        /* Оновлений блок інструкцій: без капсу, без міток */
-        .instructions { 
-            margin: 30px auto; 
-            max-width: 580px; 
-            padding: 15px; 
-            color: #bbb; 
-            line-height: 1.6; 
-            border-top: 1px solid var(--border); 
-        }
-
-        .instructions h3 { 
-            color: var(--accent); 
-            font-size: 1.1rem; 
-            margin-bottom: 20px; 
-            text-align: center; 
-            text-transform: none; /* Вимикає капс */
-            font-weight: 600; 
-            letter-spacing: normal;
-        }
-
-        .step { 
-            margin-bottom: 12px; 
-            background: #1a1a1a; 
-            padding: 15px; 
-            border-radius: 12px; 
-            font-size: 0.85rem;
-            border-left: none; /* Без фіолетової смужки */
-        }
-
+        .instructions { margin: 30px auto; max-width: 580px; padding: 15px; color: #bbb; line-height: 1.6; border-top: 1px solid var(--border); }
+        .instructions h3 { color: var(--accent); font-size: 1.1rem; margin-bottom: 20px; text-align: center; text-transform: none; font-weight: 600; letter-spacing: normal; }
+        .step { margin-bottom: 12px; background: #1a1a1a; padding: 15px; border-radius: 12px; font-size: 0.85rem; border-left: none; }
         .step b { color: white; }
 
         .btn-cal { padding: 10px 20px; background: var(--accent); color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: none; margin: 0 auto; }
     </style>
 </head>
-<body>
+<body onclick="deselectAll(event)">
 
 <header id="mainHeader">
     <h1>Автобус 283</h1>
 </header>
 
-<div class="container">
+<div class="container" onclick="event.stopPropagation()">
     <div class="quote-box">
         <div id="bible-quote">Завантаження...</div>
     </div>
@@ -131,28 +108,28 @@
     <table>
         <thead><tr><th>Пн — Пт</th><th>Субота</th><th>Неділя</th></tr></thead>
         <tbody>
-            <tr><td onclick="selectTrip('06:00', this)">06:00 — 06:30</td><td onclick="selectTrip('06:00', this)">06:00 — 06:40</td><td onclick="selectTrip('06:30', this)">06:30 — 07:10</td></tr>
-            <tr><td onclick="selectTrip('06:30', this)">06:30 — 07:10</td><td onclick="selectTrip('06:50', this)">06:50 — 07:30</td><td onclick="selectTrip('07:30', this)">07:30 — 08:10</td></tr>
-            <tr><td onclick="selectTrip('07:00', this)">07:00 — 07:40</td><td onclick="selectTrip('07:50', this)">07:50 — 08:30</td><td onclick="selectTrip('08:50', this)">08:50 — 09:30</td></tr>
-            <tr><td onclick="selectTrip('07:40', this)">07:40 — 08:20</td><td onclick="selectTrip('08:50', this)">08:50 — 09:30</td><td onclick="selectTrip('10:30', this)">10:30 — 11:30</td></tr>
-            <tr><td onclick="selectTrip('08:10', this)">08:10 — 08:45</td><td onclick="selectTrip('09:40', this)">09:40 — 10:30</td><td onclick="selectTrip('12:30', this)">12:30 — 13:30</td></tr>
-            <tr><td onclick="selectTrip('09:00', this)">09:00 — 09:40</td><td onclick="selectTrip('10:30', this)">10:30 — 11:30</td><td onclick="selectTrip('14:30', this)">14:30 — 15:30</td></tr>
-            <tr><td onclick="selectTrip('10:30', this)">10:30 — 11:00</td><td onclick="selectTrip('11:30', this)">11:30 — 12:30</td><td onclick="selectTrip('16:40', this)">16:40 — 17:20</td></tr>
-            <tr><td onclick="selectTrip('12:00', this)">12:00 — 12:30</td><td onclick="selectTrip('12:30', this)">12:30 — 13:30</td><td onclick="selectTrip('18:00', this)">18:00 — 18:40</td></tr>
-            <tr><td onclick="selectTrip('13:30', this)">13:30 — 14:00</td><td onclick="selectTrip('13:30', this)">13:30 — 14:30</td><td onclick="selectTrip('19:40', this)">19:40 — 20:10</td></tr>
-            <tr><td onclick="selectTrip('14:30', this)">14:30 — 15:00</td><td onclick="selectTrip('14:30', this)">14:30 — 15:30</td><td>-</td></tr>
-            <tr><td onclick="selectTrip('15:30', this)">15:30 — 16:00</td><td onclick="selectTrip('15:30', this)">15:30 — 16:10</td><td>-</td></tr>
-            <tr><td onclick="selectTrip('16:30', this)">16:30 — 17:00</td><td onclick="selectTrip('16:40', this)">16:40 — 17:20</td><td>-</td></tr>
-            <tr><td onclick="selectTrip('17:30', this)">17:30 — 18:00</td><td onclick="selectTrip('18:00', this)">18:00 — 18:40</td><td>-</td></tr>
-            <tr><td onclick="selectTrip('18:00', this)">18:00 — 18:30</td><td onclick="selectTrip('19:40', this)">19:40 — 20:10</td><td>-</td></tr>
-            <tr><td onclick="selectTrip('19:40', this)">19:40 — 20:10</td><td>-</td><td>-</td></tr>
+            <tr><td onclick="selectTrip('06:00', this, event)">06:00 — 06:30</td><td onclick="selectTrip('06:00', this, event)">06:00 — 06:40</td><td onclick="selectTrip('06:30', this, event)">06:30 — 07:10</td></tr>
+            <tr><td onclick="selectTrip('06:30', this, event)">06:30 — 07:10</td><td onclick="selectTrip('06:50', this, event)">06:50 — 07:30</td><td onclick="selectTrip('07:30', this, event)">07:30 — 08:10</td></tr>
+            <tr><td onclick="selectTrip('07:00', this, event)">07:00 — 07:40</td><td onclick="selectTrip('07:50', this, event)">07:50 — 08:30</td><td onclick="selectTrip('08:50', this, event)">08:50 — 09:30</td></tr>
+            <tr><td onclick="selectTrip('07:40', this, event)">07:40 — 08:20</td><td onclick="selectTrip('08:50', this, event)">08:50 — 09:30</td><td onclick="selectTrip('10:30', this, event)">10:30 — 11:30</td></tr>
+            <tr><td onclick="selectTrip('08:10', this, event)">08:10 — 08:45</td><td onclick="selectTrip('09:40', this, event)">09:40 — 10:30</td><td onclick="selectTrip('12:30', this, event)">12:30 — 13:30</td></tr>
+            <tr><td onclick="selectTrip('09:00', this, event)">09:00 — 09:40</td><td onclick="selectTrip('10:30', this, event)">10:30 — 11:30</td><td onclick="selectTrip('14:30', this, event)">14:30 — 15:30</td></tr>
+            <tr><td onclick="selectTrip('10:30', this, event)">10:30 — 11:00</td><td onclick="selectTrip('11:30', this, event)">11:30 — 12:30</td><td onclick="selectTrip('16:40', this, event)">16:40 — 17:20</td></tr>
+            <tr><td onclick="selectTrip('12:00', this, event)">12:00 — 12:30</td><td onclick="selectTrip('12:30', this, event)">12:30 — 13:30</td><td onclick="selectTrip('18:00', this, event)">18:00 — 18:40</td></tr>
+            <tr><td onclick="selectTrip('13:30', this, event)">13:30 — 14:00</td><td onclick="selectTrip('13:30', this, event)">13:30 — 14:30</td><td onclick="selectTrip('19:40', this, event)">19:40 — 20:10</td></tr>
+            <tr><td onclick="selectTrip('14:30', this, event)">14:30 — 15:00</td><td onclick="selectTrip('14:30', this, event)">14:30 — 15:30</td><td>-</td></tr>
+            <tr><td onclick="selectTrip('15:30', this, event)">15:30 — 16:00</td><td onclick="selectTrip('15:30', this, event)">15:30 — 16:10</td><td>-</td></tr>
+            <tr><td onclick="selectTrip('16:30', this, event)">16:30 — 17:00</td><td onclick="selectTrip('16:40', this, event)">16:40 — 17:20</td><td>-</td></tr>
+            <tr><td onclick="selectTrip('17:30', this, event)">17:30 — 18:00</td><td onclick="selectTrip('18:00', this, event)">18:00 — 18:40</td><td>-</td></tr>
+            <tr><td onclick="selectTrip('18:00', this, event)">18:00 — 18:30</td><td onclick="selectTrip('19:40', this, event)">19:40 — 20:10</td><td>-</td></tr>
+            <tr><td onclick="selectTrip('19:40', this, event)">19:40 — 20:10</td><td>-</td><td>-</td></tr>
         </tbody>
     </table>
 </div>
 
-<button class="share-btn" onclick="shareApp()">🔗 ПОДІЛИТИСЯ</button>
+<button class="share-btn" onclick="shareApp(); event.stopPropagation()">🔗 ПОДІЛИТИСЯ</button>
 
-<div class="instructions">
+<div class="instructions" onclick="event.stopPropagation()">
     <h3>Як зберегти розклад на телефоні?</h3>
     <div class="step">
         <b>Android (Chrome):</b> Натисніть на три крапки (⋮) та оберіть <b>«Додати на головний екран»</b>.
@@ -161,7 +138,7 @@
         <b>iPhone (Safari):</b> Кнопка «Поділитися» → <b>«На початковий екран»</b>.
     </div>
     <div class="step">
-        <b>Як зробити закладку?</b> У браузері натисніть на зірочку (★) або в меню оберіть <b>«Додати до закладок»</b>.
+        <b>Як зробити закладку?</b> У браузері натисніть на <b>зірочку (★)</b> або в меню оберіть <b>«Додати до закладок»</b>.
     </div>
 </div>
 
@@ -176,10 +153,10 @@
     };
 
     const bibleVerses = [
-        "«Промовляє до нього Ісус: Я — дорога, і правда, і життя. До Отця не приходить ніхто, якщо не через Мене» (Івана 14:6)",
+        "«Промовляє до нього Ісус: Я — дорога, і правда, і життя...» (Івана 14:6)",
         "«Бо так полюбив Бог світ, що віддав Сина Свого...» (Івана 3:16)",
         "«Господь — то мій Пастир, тому в недостатку не буду» (Псалом 22:1)",
-        "«Все можу в Тім, Хто мене підкріпляє — у Христі Ісусі» (Филип'ян 4:13)"
+        "«Все можу в Тім, Хто мене підкріпляє» (Филип'ян 4:13)"
     ];
 
     async function fetchWeather() {
@@ -201,13 +178,23 @@
     }
 
     let activeTime = "";
-    function selectTrip(time, el) {
+    
+    function selectTrip(time, el, event) {
+        event.stopPropagation(); // Зупиняємо скидання при кліку на саму комірку
         activeTime = time;
         document.querySelectorAll('td').forEach(t => t.classList.remove('selected'));
         el.classList.add('selected');
         document.getElementById('timer-block').style.display = 'block';
         document.getElementById('calBtn').style.display = 'inline-block';
         updateTimer(time);
+    }
+
+    // Функція для зняття виділення при кліку на фон
+    function deselectAll(event) {
+        activeTime = "";
+        document.querySelectorAll('td').forEach(t => t.classList.remove('selected'));
+        document.getElementById('timer-block').style.display = 'none';
+        if (window.tInt) clearInterval(window.tInt);
     }
 
     function updateTimer(time) {
