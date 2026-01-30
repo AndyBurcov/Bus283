@@ -23,24 +23,23 @@
         td { cursor: pointer; }
         .selected { background: #3700b3 !important; }
         
-        .btn-cal, .btn-widget { 
+        .btn-cal, .btn-save { 
             display: block; margin: 10px auto; padding: 12px 20px; 
             background: var(--accent); color: #000; border: none; 
-            border-radius: 8px; font-weight: bold; cursor: pointer; 
+            border-radius: 8px; font-weight: bold; cursor: pointer; width: 80%;
         }
         .btn-cal { display: none; }
 
-        .widget-box {
+        .save-box {
             margin: 20px auto;
             max-width: 580px;
             background: #2a2a2a;
-            border: 2px solid var(--accent);
+            border: 1px solid var(--accent);
             border-radius: 15px;
             padding: 20px;
             text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
-        .widget-box p { margin: 0 0 10px 0; color: white; font-size: 0.95rem; }
+        .save-box p { margin: 0 0 10px 0; color: white; font-size: 0.9rem; }
     </style>
 </head>
 <body>
@@ -78,44 +77,28 @@
     </table>
 </div>
 
-<div class="widget-box">
-    <p><b>✨ Швидкий доступ (Віджет)</b></p>
-    <p style="font-size: 0.85rem; color: #aaa; margin-bottom: 15px;">Додайте іконку 283 на головний екран, щоб не шукати посилання.</p>
-    <button class="btn-widget" onclick="showWidgetGuide()">ДОДАТИ ВІДЖЕТ</button>
+<div class="save-box">
+    <p>Збережіть посилання, щоб не загубити розклад:</p>
+    <button class="btn-save" onclick="copyLink()">ЗБЕРЕГТИ ПОСИЛАННЯ</button>
 </div>
 
 <script>
-    // РЕЄСТРАЦІЯ СЕРВІС-ВОРКЕРА (ОФЛАЙН РЕЖИМ)
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./sw.js')
-                .then(reg => console.log('SW зареєстровано!'))
-                .catch(err => console.log('SW помилка:', err));
+            navigator.serviceWorker.register('./sw.js').catch(err => console.log(err));
         });
     }
 
-    const bibleVerses = [
-        "«Промовляє до нього Ісус: Я — дорога, і правда, і життя...» (Івана 14:6)",
-        "«І нема ні в кім іншім спасіння...» (Дії 4:12)",
-        "«Бо так полюбив Бог світ...» (Івана 3:16)",
-        "«Бо заплата за гріх — смерть...» (Римлян 6:23)",
-        "«Бо коли ти устами своїми визнаватимеш Ісуса...» (Римлян 10:9)",
-        "«Бо один є Бог, і один Посередник...» (1 Тимофія 2:5)",
-        "«А всім, що Його прийняли...» (Івана 1:12)",
-        "«Хто вірує в Сина, той має вічне життя...» (Івана 3:36)"
-    ];
+    const bibleVerses = ["«Я — дорога, і правда, і життя...» (Івана 14:6)", "«І нема ні в кім іншім спасіння...» (Дії 4:12)", "«Бо так полюбив Бог світ...» (Івана 3:16)", "«Бо заплата за гріх — смерть...» (Римлян 6:23)", "«Бо коли ти устами визнаватимеш Ісуса...» (Римлян 10:9)"];
+    window.onload = () => { document.getElementById('bible-quote').innerText = bibleVerses[Math.floor(Math.random() * bibleVerses.length)]; };
 
-    window.onload = () => {
-        document.getElementById('bible-quote').innerText = bibleVerses[Math.floor(Math.random() * bibleVerses.length)];
-    };
-
-    function showWidgetGuide() {
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        if (isIOS) {
-            alert("Для iPhone:\n1. Натисніть кнопку 'Поділитися' (внизу екрана).\n2. Оберіть 'Додати на початковий екран'.");
-        } else {
-            alert("Для Android:\n1. Натисніть на три крапки (⋮) у куті браузера.\n2. Оберіть 'Додати на головний екран'.");
-        }
+    function copyLink() {
+        const url = window.location.href;
+        navigator.clipboard.writeText(url).then(() => {
+            alert("Посилання скопійовано! Тепер ви можете вставити його в Telegram, Viber або Нотатки.");
+        }).catch(() => {
+            alert("Помилка копіювання. Просто збережіть адресу сайту в закладки.");
+        });
     }
 
     let activeTime = "";
@@ -139,7 +122,7 @@
             const hrs = Math.floor(diff/3600000).toString().padStart(2,'0');
             const mns = Math.floor((diff%3600000)/60000).toString().padStart(2,'0');
             const scs = Math.floor((diff%60000)/1000).toString().padStart(2,'0');
-            document.getElementById('countdown').innerText = hrs+":"+mns+":"+scs;
+            document.getElementById('countdown').innerText = `${hrs}:${mns}:${scs}`;
         }, 1000);
     }
 
