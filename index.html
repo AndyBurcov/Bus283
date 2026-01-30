@@ -15,13 +15,13 @@
         header { background: #252525; padding: 25px 15px; text-align: center; border-bottom: 2px solid var(--accent); }
         h1 { margin: 0; font-size: 2.2rem; font-style: italic; text-transform: uppercase; letter-spacing: 2px; color: white; margin-bottom: 15px; }
         
-        .quote-box { display: inline-block; background: #2a2a2a; padding: 12px 20px; border-radius: 20px; border: 1px solid #444; max-width: 90%; margin-bottom: 10px; }
-        #bible-quote { font-style: italic; font-size: 0.9rem; color: #ccc; margin: 0; line-height: 1.4; }
+        /* Виправлено: вірш більше не обрізається */
+        .quote-box { display: block; background: #2a2a2a; padding: 15px 20px; border-radius: 20px; border: 1px solid #444; margin: 0 auto 15px auto; width: fit-content; max-width: 95%; box-sizing: border-box; }
+        #bible-quote { font-style: italic; font-size: 0.95rem; color: white; margin: 0; line-height: 1.5; text-align: center; white-space: normal; overflow: visible; }
         
-        /* Секція погоди та побажань */
         .weather-wish-box { padding: 10px; background: #222; border-bottom: 1px solid var(--border); font-size: 0.9rem; text-align: center; }
         #weather-info { font-weight: bold; color: var(--accent); margin-bottom: 5px; }
-        #wish-text { color: white; font-style: normal; }
+        #wish-text { color: white; line-height: 1.4; }
 
         #timer-block { background: #2a2a2a; padding: 15px; text-align: center; display: none; border-bottom: 1px solid var(--border); }
         #countdown { font-size: 1.6rem; color: var(--accent); font-weight: bold; }
@@ -84,31 +84,33 @@
 
 <script>
     const bibleVerses = [
-        "«Я — дорога, і правда, і життя...» (Івана 14:6)",
-        "«Бо так полюбив Бог світ, що віддав Сина Свого...» (Івана 3:16)",
+        "«Промовляє до нього Ісус: Я — дорога, і правда, і життя. До Отця не приходить ніхто, якщо не через Мене» (Івана 14:6)",
+        "«Бо так полюбив Бог світ, що віддав Сина Свого Однородженого, щоб кожен, хто вірує в Нього, не загинув, а мав життя вічне» (Івана 3:16)",
+        "«І нема ні в кім іншім спасіння. Бо під небом нема іншого Ймення, даного людям, що ним би спастися ми мали» (Дії 4:12)",
+        "«Бо заплата за гріх — смерть, а дар Божий — життя вічне в Христі Ісусі, Господі нашім» (Римлян 6:23)",
         "«Господь — то мій Пастир, тому в недостатку не буду» (Псалом 22:1)",
         "«Все можу в Тім, Хто мене підкріпляє — у Христі Ісусі» (Филип'ян 4:13)"
     ];
 
     async function fetchWeather() {
         try {
-            // Запит погоди для Києва (як приклад, можна змінити координати)
-            const response = await fetch('https://api.open-meteo.com/v1/forecast?latitude=50.45&longitude=30.52&current_weather=true');
+            // Геопозиція Кропивницького: 48.50, 32.26
+            const response = await fetch('https://api.open-meteo.com/v1/forecast?latitude=48.50&longitude=32.26&current_weather=true');
             const data = await response.json();
             const temp = Math.round(data.current_weather.temperature);
             const code = data.current_weather.weathercode;
             
-            document.getElementById('weather-info').innerText = `Зараз у місті: ${temp}°C`;
+            document.getElementById('weather-info').innerText = `Кропивницький: ${temp}°C`;
             
             let wish = "Бережіть себе та гарної дороги!";
-            if (code > 50) wish = "☔️ Здається, дощить. Не забудьте парасольку та будьте обережні!";
+            if (code >= 51) wish = "☔️ Здається, дощить. Не забудьте парасольку та будьте обережні!";
             else if (temp < 0) wish = "❄️ На вулиці мороз. Одягайтеся тепліше, щоб не застудитися!";
-            else if (temp > 25) wish = "☀️ Сьогодні спекотно. Візьміть із собою пляшечку води.";
-            else if (code === 0) wish = "☀️ Гарна погода для поїздки! Нехай ваш день буде благословенним.";
+            else if (temp > 28) wish = "☀️ Сьогодні дуже спекотно. Обов'язково візьміть воду.";
+            else if (code === 0 || code === 1) wish = "☀️ Гарна погода! Нехай ваш шлях буде легким та благословенним.";
 
             document.getElementById('wish-text').innerText = wish;
         } catch (e) {
-            document.getElementById('weather-info').innerText = "Гарної вам подорожі!";
+            document.getElementById('weather-info').innerText = "Кропивницький: погода оновлюється";
         }
     }
 
