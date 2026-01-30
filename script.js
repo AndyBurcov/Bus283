@@ -75,10 +75,10 @@ async function fetchWeather() {
         document.getElementById('weather-info').innerText = `Кропивницький: ${temp}°C`;
         
         let wish = "Гарної та благословенної дороги!";
-        if (code >= 51) wish = "☔️ Здається, дощить. Парасольку!";
-        else if (temp < -2) wish = "❄️ На вулиці мороз. Тепліше!";
-        else if (temp > 28) wish = "☀️ Спекотно. Візьміть воду.";
-        else if (code >= 1 && code <= 3) wish = "☁️ Сьогодні хмарно. Гарної поїздки!";
+        if (code >= 51) wish = "☔️ Здається, дощить. Не забудьте парасольку!";
+        else if (temp < -2) wish = "❄️ На вулиці мороз. Вдягайтесь тепліше!";
+        else if (temp > 28) wish = "☀️ Спекотно. Візьміть пляшечку води.";
+        else if (code >= 1 && code <= 3) wish = "☁️ Сьогодні хмарно. Гарної вам поїздки!";
         document.getElementById('wish-text').innerText = wish;
     } catch (e) { document.getElementById('weather-info').innerText = "Погода оновлюється"; }
 }
