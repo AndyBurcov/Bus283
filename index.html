@@ -10,51 +10,93 @@
 
     <style>
         :root { --bg: #121212; --card: #1e1e1e; --text: #e0e0e0; --accent: #bb86fc; --border: #333; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; padding-bottom: 50px; }
-        .container { max-width: 600px; margin: auto; background: var(--card); border-radius: 12px; overflow: hidden; }
-        header { background: #252525; padding: 25px 15px; text-align: center; border-bottom: 2px solid var(--accent); }
-        h1 { margin: 0; font-size: 2.2rem; font-style: italic; text-transform: uppercase; letter-spacing: 2px; color: white; margin-bottom: 15px; }
         
-        .quote-box { display: block; background: #2a2a2a; padding: 15px 20px; border-radius: 20px; border: 1px solid #444; margin: 0 auto 15px auto; width: fit-content; max-width: 95%; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, sans-serif; 
+            background: var(--bg); 
+            color: var(--text); 
+            margin: 0; 
+            padding-bottom: 50px; 
+        }
+
+        /* Адаптивна Glassmorphism шапка */
+        header { 
+            position: fixed; 
+            top: 0; left: 0; right: 0; 
+            z-index: 1000;
+            background: rgba(18, 18, 18, 0.7); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px); 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            height: 85px; 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        h1 { 
+            margin: 0; 
+            font-size: 2.2rem; 
+            font-style: italic; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            color: white; 
+            transition: all 0.3s ease;
+        }
+
+        header.scrolled { height: 60px; background: rgba(18, 18, 18, 0.85); }
+        header.scrolled h1 { font-size: 1.4rem; letter-spacing: 1px; }
+
+        .container { 
+            max-width: 600px; 
+            margin: 110px auto 20px auto; 
+            background: var(--card); 
+            border-radius: 12px; 
+            overflow: hidden; 
+        }
+        
+        .quote-box { background: #2a2a2a; padding: 15px 20px; border-radius: 20px; border: 1px solid #444; margin: 20px auto; width: fit-content; max-width: 90%; box-sizing: border-box; }
         #bible-quote { font-style: italic; font-size: 0.95rem; color: white; margin: 0; line-height: 1.5; text-align: center; }
         
-        .weather-wish-box { padding: 5px 10px; font-size: 0.9rem; text-align: center; margin-top: 10px; }
-        #weather-info { font-weight: bold; color: var(--accent); margin-bottom: 3px; display: block; }
-        #wish-text { color: #aaa; line-height: 1.4; display: block; font-style: italic; }
+        .weather-wish-box { padding: 10px; text-align: center; margin-bottom: 30px; }
+        #weather-info { font-weight: bold; color: var(--accent); margin-bottom: 5px; display: block; }
+        #wish-text { color: #aaa; font-style: italic; font-size: 0.9rem; line-height: 1.4; display: block; }
 
-        #timer-block { background: #2a2a2a; padding: 15px; text-align: center; display: none; border-bottom: 1px solid var(--border); }
-        #countdown { font-size: 1.6rem; color: var(--accent); font-weight: bold; }
+        #timer-block { background: #252525; padding: 15px; text-align: center; display: none; border-top: 2px solid var(--accent); }
+        #countdown { font-size: 1.6rem; color: var(--accent); font-weight: bold; display: block; margin-bottom: 10px; }
         
-        table { width: 100%; border-collapse: collapse; }
+        table { width: 100%; border-collapse: collapse; border-top: 2px solid var(--accent); }
         th, td { padding: 12px 5px; text-align: center; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); font-size: 0.85rem; }
         td { cursor: pointer; color: #fff; }
         .selected { background: #3700b3 !important; }
 
-        .share-btn { display: block; width: 200px; margin: 20px auto; padding: 12px; background: transparent; border: 2px solid var(--accent); color: var(--accent); border-radius: 30px; font-weight: bold; cursor: pointer; text-align: center; transition: 0.3s; }
-        .share-btn:active { background: var(--accent); color: #000; }
+        .share-btn { display: block; width: 200px; margin: 30px auto; padding: 12px; background: transparent; border: 2px solid var(--accent); color: var(--accent); border-radius: 30px; font-weight: bold; cursor: pointer; text-align: center; }
 
+        /* Оновлений блок інструкцій */
         .instructions { margin: 30px auto; max-width: 580px; padding: 15px; color: #bbb; font-size: 0.9rem; line-height: 1.6; border-top: 1px solid var(--border); }
-        .instructions h3 { color: var(--accent); font-size: 1rem; margin-bottom: 10px; text-align: center; }
-        .step { margin-bottom: 15px; background: #1a1a1a; padding: 10px; border-radius: 8px; }
+        .instructions h3 { color: var(--accent); font-size: 1.1rem; margin-bottom: 15px; text-align: center; }
+        .step { margin-bottom: 15px; background: #1a1a1a; padding: 12px; border-radius: 10px; border-left: 3px solid var(--accent); }
         .step b { color: white; }
 
-        .btn-cal { display: block; margin: 10px auto; padding: 10px 20px; background: var(--accent); color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: none; }
+        .btn-cal { padding: 10px 20px; background: var(--accent); color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: none; margin: 0 auto; }
     </style>
 </head>
 <body>
 
+<header id="mainHeader">
+    <h1>Автобус 283</h1>
+</header>
+
 <div class="container">
-    <header>
-        <h1>АВТОБУС 283</h1>
-        <div class="quote-box">
-            <div id="bible-quote">Завантаження...</div>
-        </div>
-        
-        <div class="weather-wish-box">
-            <span id="weather-info">Оновлення погоди...</span>
-            <span id="wish-text">Гарної дороги!</span>
-        </div>
-    </header>
+    <div class="quote-box">
+        <div id="bible-quote">Завантаження...</div>
+    </div>
+    
+    <div class="weather-wish-box">
+        <span id="weather-info">Оновлення погоди...</span>
+        <span id="wish-text">Гарної дороги!</span>
+    </div>
 
     <div id="timer-block">
         <span id="countdown">00:00:00</span>
@@ -86,21 +128,33 @@
 <button class="share-btn" onclick="shareApp()">🔗 ПОДІЛИТИСЯ</button>
 
 <div class="instructions">
-    <h3>Як зберегти розклад на телефоні?</h3>
+    <h3>Корисні поради:</h3>
     <div class="step">
         <b>Android (Chrome):</b> Натисніть на три крапки (⋮) та оберіть <b>«Додати на головний екран»</b>.
     </div>
     <div class="step">
         <b>iPhone (Safari):</b> Кнопка «Поділитися» → <b>«На початковий екран»</b>.
     </div>
+    <div class="step">
+        <b>Як зробити закладку?</b> У браузері натисніть на <b>значок зірочки (☆)</b> або в меню оберіть <b>«Додати до закладок»</b>. Так ви знайдете розклад одним натисканням!
+    </div>
 </div>
 
 <script>
+    window.onscroll = function() {
+        const header = document.getElementById("mainHeader");
+        if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
+            header.classList.add("scrolled");
+        } else {
+            header.classList.remove("scrolled");
+        }
+    };
+
     const bibleVerses = [
         "«Промовляє до нього Ісус: Я — дорога, і правда, і життя. До Отця не приходить ніхто, якщо не через Мене» (Івана 14:6)",
-        "«Бо так полюбив Бог світ, що віддав Сина Свого...» (Івана 3:16)",
+        "«Бо так полюбив Бог світ, що віддав Сина Свого Однородженого, щоб кожен, хто вірує в Нього, не загинув, а мав життя вічне» (Івана 3:16)",
         "«Господь — то мій Пастир, тому в недостатку не буду» (Псалом 22:1)",
-        "«Все можу в Тім, Хто мене підкріпляє...» (Филип'ян 4:13)"
+        "«Все можу в Тім, Хто мене підкріпляє — у Христі Ісусі» (Филип'ян 4:13)"
     ];
 
     async function fetchWeather() {
@@ -109,35 +163,17 @@
             const data = await response.json();
             const temp = Math.round(data.current_weather.temperature);
             const code = data.current_weather.weathercode;
-            
             document.getElementById('weather-info').innerText = `Кропивницький: ${temp}°C`;
-            
             let wish = "Гарного та благословенного дня!";
             if (code >= 51) wish = "☔️ Здається, дощить. Не забудьте парасольку!";
             else if (temp < -2) wish = "❄️ На вулиці мороз. Одягайтеся тепліше!";
             else if (temp > 28) wish = "☀️ Спекотно. Візьміть пляшечку води.";
             else if (code >= 1 && code <= 3) wish = "☁️ Сьогодні хмарно. Гарної вам поїздки!";
-
             document.getElementById('wish-text').innerText = wish;
         } catch (e) {
             document.getElementById('weather-info').innerText = "Кропивницький: погода оновлюється";
         }
     }
-
-    function shareApp() {
-        if (navigator.share) {
-            navigator.share({
-                title: 'Розклад Автобуса 283',
-                url: window.location.href
-            });
-        }
-    }
-
-    window.onload = function() {
-        const randomIndex = Math.floor(Math.random() * bibleVerses.length);
-        document.getElementById('bible-quote').innerText = bibleVerses[randomIndex];
-        fetchWeather();
-    };
 
     let activeTime = "";
     function selectTrip(time, el) {
@@ -156,13 +192,32 @@
         if (window.tInt) clearInterval(window.tInt);
         window.tInt = setInterval(() => {
             const diff = target - new Date();
-            if (diff <= 0) { clearInterval(window.tInt); return; }
+            if (diff <= 0) { clearInterval(window.tInt); document.getElementById('countdown').innerText = "Рейс відійшов"; return; }
             const hrs = Math.floor(diff/3600000).toString().padStart(2,'0');
             const mns = Math.floor((diff%3600000)/60000).toString().padStart(2,'0');
             const scs = Math.floor((diff%60000)/1000).toString().padStart(2,'0');
-            document.getElementById('countdown').innerText = hrs+":"+mns+":"+scs;
+            document.getElementById('countdown').innerText = "До рейсу: " + hrs+":"+mns+":"+scs;
         }, 1000);
     }
+
+    function addToCalendar() {
+        if (!activeTime) return;
+        const [h, m] = activeTime.split(':');
+        let start = new Date(); start.setHours(parseInt(h), parseInt(m), 0);
+        let end = new Date(start.getTime() + 30 * 60000);
+        const fmt = d => d.toISOString().replace(/-|:|\.\d+/g, '');
+        const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:Автобус 283\nDTSTART:${fmt(start)}\nDTEND:${fmt(end)}\nDESCRIPTION:Пора виходити на зупинку!\nBEGIN:VALARM\nTRIGGER:-PT10M\nACTION:DISPLAY\nDESCRIPTION:Нагадування\nEND:VALARM\nEND:VEVENT\nEND:VCALENDAR`;
+        const blob = new Blob([icsData], { type: 'text/calendar' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = 'bus283.ics'; a.click();
+    }
+
+    function shareApp() { if (navigator.share) navigator.share({ title: '283', url: window.location.href }); }
+
+    window.onload = function() {
+        document.getElementById('bible-quote').innerText = bibleVerses[Math.floor(Math.random() * bibleVerses.length)];
+        fetchWeather();
+    };
 </script>
 </body>
 </html>
