@@ -61,15 +61,20 @@
         #weather-info { font-weight: bold; color: var(--accent); margin-bottom: 5px; display: block; }
         #wish-text { color: #aaa; font-style: italic; font-size: 0.9rem; line-height: 1.4; display: block; }
 
+        /* Оновлений анімований світчер */
         .switcher-container {
+            position: relative;
             display: flex;
             background: #252525;
             margin: 10px 20px 25px;
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 4px;
             border: 1px solid var(--border);
+            z-index: 1;
         }
+        
         .sw-btn {
+            position: relative;
             flex: 1;
             padding: 12px 5px;
             border: none;
@@ -78,11 +83,27 @@
             cursor: pointer;
             font-weight: bold;
             font-size: 0.75rem;
-            border-radius: 8px;
-            transition: all 0.3s;
+            z-index: 2;
+            transition: color 0.3s ease;
             text-transform: uppercase;
         }
-        .sw-btn.active { background: var(--accent); color: #000; }
+        
+        .sw-btn.active { color: #000; }
+
+        .sw-slider {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: calc(50% - 4px);
+            height: calc(100% - 8px);
+            background: var(--accent);
+            border-radius: 9px;
+            z-index: 1;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Переміщення повзунка */
+        [data-mode="sozonivka"] .sw-slider { transform: translateX(100%); }
 
         #timer-block { 
             background: #252525; text-align: center; border-top: 2px solid var(--accent);
@@ -93,7 +114,7 @@
         
         table { width: 100%; border-collapse: collapse; border-top: 2px solid var(--accent); }
         th, td { padding: 12px 5px; text-align: center; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); font-size: 0.85rem; }
-        .route-label { background: rgba(255, 255, 255, 0.03); color: #888; font-size: 0.7rem; text-transform: uppercase; pointer-events: none; }
+        .route-label { background: rgba(255, 255, 255, 0.03); color: #888; font-size: 0.75rem; text-transform: uppercase; pointer-events: none; border-right: none; }
         td { cursor: pointer; color: #fff; transition: background 0.2s; }
         .selected { background: #3700b3 !important; }
 
@@ -121,7 +142,8 @@
         <span id="wish-text">Гарної дороги!</span>
     </div>
 
-    <div class="switcher-container">
+    <div class="switcher-container" id="switcher">
+        <div class="sw-slider"></div>
         <button id="btn-market" class="sw-btn active" onclick="setMode('market')">З Критого Ринку</button>
         <button id="btn-sozonivka" class="sw-btn" onclick="setMode('sozonivka')">Із Созонівки</button>
     </div>
@@ -134,7 +156,7 @@
     <table>
         <thead><tr><th>Пн — Пт</th><th>Сб — Нд</th></tr></thead>
         <tbody>
-            <tr><td class="route-label" id="label-left">Завантаження...</td><td class="route-label" id="label-right">Завантаження...</td></tr>
+            <tr><td colspan="2" class="route-label" id="label-main">Завантаження...</td></tr>
         </tbody>
         <tbody id="schedule-body"></tbody>
     </table>
@@ -150,7 +172,7 @@
 </div>
 
 <script>
-    const SITE_VERSION = "1.4"; 
+    const SITE_VERSION = "1.6"; 
 
     const schedule = [
         { wd: "06:00 — 06:30", we: "06:30 — 07:10" },
@@ -171,12 +193,15 @@
     ];
 
     function setMode(mode) {
+        // Керування анімацією повзунка
+        const switcher = document.getElementById('switcher');
+        switcher.setAttribute('data-mode', mode);
+
         document.getElementById('btn-market').classList.toggle('active', mode === 'market');
         document.getElementById('btn-sozonivka').classList.toggle('active', mode === 'sozonivka');
         
         const label = (mode === 'market') ? "Критий Ринок — Созонівка" : "Созонівка — Критий Ринок";
-        document.getElementById('label-left').innerText = label;
-        document.getElementById('label-right').innerText = label;
+        document.getElementById('label-main').innerText = label;
 
         const body = document.getElementById('schedule-body');
         body.innerHTML = '';
@@ -184,26 +209,16 @@
         schedule.forEach(row => {
             const tr = document.createElement('tr');
             
-            // Будні
-            const tdWd = document.createElement('td');
-            if (row.wd) {
-                const parts = row.wd.split(' — ');
-                const displayTime = (mode === 'market') ? parts[0] : parts[1];
-                tdWd.innerText = displayTime;
-                tdWd.onclick = (e) => selectTrip(displayTime, tdWd, e);
-            } else { tdWd.innerText = '-'; }
-
-            // Вихідні
-            const tdWe = document.createElement('td');
-            if (row.we) {
-                const parts = row.we.split(' — ');
-                const displayTime = (mode === 'market') ? parts[0] : parts[1];
-                tdWe.innerText = displayTime;
-                tdWe.onclick = (e) => selectTrip(displayTime, tdWe, e);
-            } else { tdWe.innerText = '-'; }
-
-            tr.appendChild(tdWd);
-            tr.appendChild(tdWe);
+            [row.wd, row.we].forEach(val => {
+                const td = document.createElement('td');
+                if (val) {
+                    const parts = val.split(' — ');
+                    const displayTime = (mode === 'market') ? parts[0] : parts[1];
+                    td.innerText = displayTime;
+                    td.onclick = (e) => selectTrip(displayTime, td, e);
+                } else { td.innerText = '-'; }
+                tr.appendChild(td);
+            });
             body.appendChild(tr);
         });
         deselectAll();
@@ -220,9 +235,9 @@
     async function fetchWeather() {
         try {
             const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=48.50&longitude=32.26&current_weather=true&timezone=auto');
-            const data = await res.json();
-            const temp = Math.round(data.current_weather.temperature);
-            const code = data.current_weather.weathercode;
+            const dw = await res.json();
+            const temp = Math.round(dw.current_weather.temperature);
+            const code = dw.current_weather.weathercode;
             document.getElementById('weather-info').innerText = `Кропивницький: ${temp}°C`;
             
             let wish = "Гарної та благословенної дороги!";
