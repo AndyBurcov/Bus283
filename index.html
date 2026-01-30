@@ -13,7 +13,6 @@
         
         body { 
             font-family: -apple-system, sans-serif; 
-            /* Плавний градієнт фону */
             background: linear-gradient(180deg, #252525 0%, #121212 400px, #121212 100%);
             background-attachment: fixed;
             color: var(--text); 
@@ -62,11 +61,27 @@
         .quote-box { background: #2a2a2a; padding: 15px 20px; border-radius: 20px; border: 1px solid #444; margin: 20px auto; width: fit-content; max-width: 90%; box-sizing: border-box; }
         #bible-quote { font-style: italic; font-size: 0.95rem; color: white; margin: 0; line-height: 1.5; text-align: center; }
         
-        .weather-wish-box { padding: 10px; text-align: center; margin-bottom: 30px; }
+        .weather-wish-box { padding: 10px; text-align: center; margin-bottom: 10px; }
         #weather-info { font-weight: bold; color: var(--accent); margin-bottom: 5px; display: block; }
         #wish-text { color: #aaa; font-style: italic; font-size: 0.9rem; line-height: 1.4; display: block; }
 
-        #timer-block { background: #252525; padding: 15px; text-align: center; display: none; border-top: 2px solid var(--accent); }
+        /* Оновлений блок таймера: плавна поява без скачків */
+        #timer-block { 
+            background: #252525; 
+            padding: 15px; 
+            text-align: center; 
+            border-top: 2px solid var(--accent);
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.4s ease-in-out; /* Плавність */
+        }
+        #timer-block.visible {
+            opacity: 1;
+            max-height: 120px; /* Висота при появі */
+            padding: 15px;
+        }
+
         #countdown { font-size: 1.6rem; color: var(--accent); font-weight: bold; display: block; margin-bottom: 10px; }
         
         table { width: 100%; border-collapse: collapse; border-top: 2px solid var(--accent); }
@@ -180,20 +195,21 @@
     let activeTime = "";
     
     function selectTrip(time, el, event) {
-        event.stopPropagation(); // Зупиняємо скидання при кліку на саму комірку
+        event.stopPropagation();
         activeTime = time;
         document.querySelectorAll('td').forEach(t => t.classList.remove('selected'));
         el.classList.add('selected');
-        document.getElementById('timer-block').style.display = 'block';
+        
+        const timerBlock = document.getElementById('timer-block');
+        timerBlock.classList.add('visible'); // Плавна поява
         document.getElementById('calBtn').style.display = 'inline-block';
         updateTimer(time);
     }
 
-    // Функція для зняття виділення при кліку на фон
     function deselectAll(event) {
         activeTime = "";
         document.querySelectorAll('td').forEach(t => t.classList.remove('selected'));
-        document.getElementById('timer-block').style.display = 'none';
+        document.getElementById('timer-block').classList.remove('visible'); // Плавне зникнення
         if (window.tInt) clearInterval(window.tInt);
     }
 
@@ -204,7 +220,11 @@
         if (window.tInt) clearInterval(window.tInt);
         window.tInt = setInterval(() => {
             const diff = target - new Date();
-            if (diff <= 0) { clearInterval(window.tInt); document.getElementById('countdown').innerText = "Рейс відійшов"; return; }
+            if (diff <= 0) { 
+                clearInterval(window.tInt); 
+                document.getElementById('countdown').innerText = "Рейс відійшов"; 
+                return; 
+            }
             const hrs = Math.floor(diff/3600000).toString().padStart(2,'0');
             const mns = Math.floor((diff%3600000)/60000).toString().padStart(2,'0');
             const scs = Math.floor((diff%60000)/1000).toString().padStart(2,'0');
