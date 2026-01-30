@@ -10,7 +10,7 @@
 
     <style>
         :root { --bg: #121212; --card: #1e1e1e; --text: #e0e0e0; --accent: #bb86fc; --border: #333; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; padding-bottom: 40px; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; padding-bottom: 50px; }
         .container { max-width: 600px; margin: auto; background: var(--card); border-radius: 12px; overflow: hidden; }
         header { background: #252525; padding: 25px 15px; text-align: center; border-bottom: 2px solid var(--accent); }
         h1 { margin: 0; font-size: 2.2rem; font-style: italic; text-transform: uppercase; letter-spacing: 2px; color: white; margin-bottom: 20px; }
@@ -22,7 +22,14 @@
         th, td { padding: 12px 5px; text-align: center; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); font-size: 0.85rem; }
         td { cursor: pointer; }
         .selected { background: #3700b3 !important; }
-        .btn-cal { display: block; margin: 10px auto; padding: 10px 20px; background: var(--accent); color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: none; }
+        
+        /* Стилі для кнопки розкладу та кнопки встановлення */
+        .btn-cal, .btn-install { 
+            display: block; margin: 10px auto; padding: 12px 20px; 
+            background: var(--accent); color: #000; border: none; 
+            border-radius: 8px; font-weight: bold; cursor: pointer; 
+        }
+        .btn-cal { display: none; }
 
         .pwa-info-box {
             margin: 20px auto;
@@ -30,12 +37,11 @@
             background: #2a2a2a;
             border: 1px solid var(--accent);
             border-radius: 12px;
-            padding: 15px;
+            padding: 20px;
             text-align: center;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
-        .pwa-info-box p { margin: 0 0 10px 0; font-size: 0.95rem; color: white; line-height: 1.4; }
-        .pwa-info-box b { color: var(--accent); }
+        .pwa-info-box p { margin: 0 0 15px 0; font-size: 0.95rem; color: white; }
     </style>
 </head>
 <body>
@@ -74,27 +80,16 @@
 </div>
 
 <div class="pwa-info-box">
-    <p>📱 Щоб відкривати розклад одним натисканням:</p>
-    <p>Натисніть <b>три крапки</b> (або "Поділитися") та оберіть <b>"Додати на головний екран"</b>.</p>
+    <p>📱 Відкривайте розклад миттєво з робочого столу:</p>
+    <button class="btn-install" id="installBtn">ЗБЕРЕГТИ ЯК ЯРЛИК</button>
 </div>
 
 <script>
-    const bibleVerses = [
-        "«Промовляє до нього Ісус: Я — дорога, і правда, і життя. До Отця не приходить ніхто, якщо не через Мене» (Івана 14:6)",
-        "«І нема ні в кім іншім спасіння. Бо під небом нема іншого Ймення, даного людям, що ним би спастися ми мали» (Дії 4:12)",
-        "«Бо так полюбив Бог світ, що віддав Сина Свого Однородженого, щоб кожен, хто вірує в Нього, не загинув, а мав життя вічне» (Івана 3:16)",
-        "«Бо заплата за гріх — смерть, а дар Божий — життя вічне в Христі Ісусі, Господі нашім» (Римлян 6:23)",
-        "«Бо коли ти устами своїми визнаватимеш Ісуса за Господа, і серцем своїм віруватимеш, що Бог воскресив Його з мертвих, то спасешся» (Римлян 10:9)",
-        "«Бо один є Бог, і один Посередник між Богом та людьми, — Людина Христос Ісус» (1 Тимофія 2:5)",
-        "«А всім, що Його прийняли, їм владу дало дітьми Божими стати, тим, що вірять у Ймення Його» (Івана 1:12)",
-        "«Хто вірує в Сина, той має вічне життя; а хто в Сина не вірує, той життя не побачить» (Івана 3:36)"
-    ];
+    // Код для цитат
+    const bibleVerses = ["«Промовляє до нього Ісус: Я — дорога, і правда, і життя...» (Івана 14:6)", "«І нема ні в кім іншім спасіння...» (Дії 4:12)", "«Бо так полюбив Бог світ...» (Івана 3:16)", "«Бо заплата за гріх — смерть...» (Римлян 6:23)", "«Бо коли ти устами своїми визнаватимеш Ісуса...» (Римлян 10:9)"];
+    window.onload = () => { document.getElementById('bible-quote').innerText = bibleVerses[Math.floor(Math.random() * bibleVerses.length)]; };
 
-    window.onload = function() {
-        const randomIndex = Math.floor(Math.random() * bibleVerses.length);
-        document.getElementById('bible-quote').innerText = bibleVerses[randomIndex];
-    };
-
+    // Код для таймера та календаря
     let activeTime = "";
     function selectTrip(time, el) {
         activeTime = time;
@@ -104,7 +99,6 @@
         document.getElementById('calBtn').style.display = 'inline-block';
         updateTimer(time);
     }
-
     function updateTimer(time) {
         const [h, m] = time.split(':');
         let target = new Date(); target.setHours(parseInt(h), parseInt(m), 0);
@@ -116,19 +110,34 @@
             const hrs = Math.floor(diff/3600000).toString().padStart(2,'0');
             const mns = Math.floor((diff%3600000)/60000).toString().padStart(2,'0');
             const scs = Math.floor((diff%60000)/1000).toString().padStart(2,'0');
-            document.getElementById('countdown').innerText = hrs+":"+mns+":"+scs;
+            document.getElementById('countdown').innerText = `${hrs}:${mns}:${scs}`;
         }, 1000);
     }
-
     function addToCalendar() {
         const [h, m] = activeTime.split(':');
-        const now = new Date();
-        const start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m);
+        const start = new Date(); start.setHours(h, m);
         const end = new Date(start.getTime() + 20*60000);
         const fmt = (d) => d.toISOString().replace(/-|:|\.\d\d\d/g, "");
-        const url = `data:text/calendar;charset=utf8,BEGIN:VCALENDAR%0AVERSION:2.0%0ABEGIN:VEVENT%0ADTSTART:${fmt(start)}%0ADTEND:${fmt(end)}%0ASUMMARY:Автобус 283%0AEND:VEVENT%0AEND:VCALENDAR`;
-        window.open(url);
+        window.open(`data:text/calendar;charset=utf8,BEGIN:VCALENDAR%0AVERSION:2.0%0ABEGIN:VEVENT%0ADTSTART:${fmt(start)}%0ADTEND:${fmt(end)}%0ASUMMARY:Автобус 283%0AEND:VEVENT%0AEND:VCALENDAR`);
     }
+
+    // --- ЛОГІКА КНОПКИ ВСТАНОВЛЕННЯ ---
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+    });
+
+    document.getElementById('installBtn').addEventListener('click', async () => {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') deferredPrompt = null;
+        } else {
+            // Якщо браузер не підтримує авто-виклик (наприклад iPhone або Safari)
+            alert("Натисніть кнопку 'Поділитися' (внизу екрана) та оберіть 'Додати на початковий екран'.");
+        }
+    });
 </script>
 </body>
 </html>
