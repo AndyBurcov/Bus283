@@ -10,12 +10,44 @@
 
     <style>
         :root { --bg: #121212; --card: #1e1e1e; --text: #e0e0e0; --accent: #bb86fc; --border: #333; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; padding-bottom: 50px; }
-        .container { max-width: 600px; margin: auto; background: var(--card); border-radius: 12px; overflow: hidden; }
-        header { background: #252525; padding: 25px 15px; text-align: center; border-bottom: 2px solid var(--accent); }
-        h1 { margin: 0; font-size: 2.2rem; font-style: italic; text-transform: uppercase; letter-spacing: 2px; color: white; margin-bottom: 15px; }
         
-        .quote-box { display: block; background: #2a2a2a; padding: 15px 20px; border-radius: 20px; border: 1px solid #444; margin: 0 auto 15px auto; width: fit-content; max-width: 95%; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, sans-serif; 
+            background: var(--bg); 
+            color: var(--text); 
+            margin: 0; 
+            padding: 0; 
+            padding-bottom: 50px; 
+        }
+
+        /* Ефект Glassmorphism для верхньої панелі */
+        header { 
+            position: fixed; 
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(18, 18, 18, 0.6); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px); 
+            padding: 20px 15px; 
+            text-align: center; 
+            /* Світла лінія замість фіолетової */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2); 
+        }
+
+        h1 { margin: 0; font-size: 2.2rem; font-style: italic; text-transform: uppercase; letter-spacing: 2px; color: white; }
+
+        .container { 
+            max-width: 600px; 
+            margin: auto; 
+            background: var(--card); 
+            border-radius: 12px; 
+            overflow: hidden; 
+            margin-top: 110px; /* Відступ під шапку */
+        }
+        
+        .quote-box { display: block; background: #2a2a2a; padding: 15px 20px; border-radius: 20px; border: 1px solid #444; margin: 20px auto 15px auto; width: fit-content; max-width: 95%; box-sizing: border-box; }
         #bible-quote { font-style: italic; font-size: 0.95rem; color: white; margin: 0; line-height: 1.5; text-align: center; }
         
         .weather-wish-box { padding: 5px 10px; font-size: 0.9rem; text-align: center; margin-top: 10px; }
@@ -34,7 +66,6 @@
         .share-btn:active { background: var(--accent); color: #000; }
 
         .instructions { margin: 30px auto; max-width: 580px; padding: 15px; color: #bbb; font-size: 0.9rem; line-height: 1.6; border-top: 1px solid var(--border); }
-        .instructions h3 { color: var(--accent); font-size: 1rem; margin-bottom: 10px; text-align: center; }
         .step { margin-bottom: 15px; background: #1a1a1a; padding: 10px; border-radius: 8px; }
         .step b { color: white; }
 
@@ -43,18 +74,19 @@
 </head>
 <body>
 
+<header>
+    <h1>АВТОБУС 283</h1>
+</header>
+
 <div class="container">
-    <header>
-        <h1>АВТОБУС 283</h1>
-        <div class="quote-box">
-            <div id="bible-quote">Завантаження...</div>
-        </div>
-        
-        <div class="weather-wish-box">
-            <span id="weather-info">Оновлення погоди...</span>
-            <span id="wish-text">Гарної дороги!</span>
-        </div>
-    </header>
+    <div class="quote-box">
+        <div id="bible-quote">Завантаження...</div>
+    </div>
+    
+    <div class="weather-wish-box">
+        <span id="weather-info">Оновлення погоди...</span>
+        <span id="wish-text">Гарної дороги!</span>
+    </div>
 
     <div id="timer-block">
         <span id="countdown">00:00:00</span>
@@ -86,21 +118,17 @@
 <button class="share-btn" onclick="shareApp()">🔗 ПОДІЛИТИСЯ</button>
 
 <div class="instructions">
-    <h3>Як зберегти розклад на телефоні?</h3>
-    <div class="step">
-        <b>Android (Chrome):</b> Натисніть на три крапки (⋮) та оберіть <b>«Додати на головний екран»</b>.
-    </div>
-    <div class="step">
-        <b>iPhone (Safari):</b> Кнопка «Поділитися» → <b>«На початковий екран»</b>.
-    </div>
+    <div class="step"><b>Android:</b> Три крапки (⋮) → <b>Додати на головний екран</b>.</div>
+    <div class="step"><b>iPhone:</b> Кнопка «Поділитися» → <b>На початковий екран</b>.</div>
 </div>
 
 <script>
     const bibleVerses = [
         "«Промовляє до нього Ісус: Я — дорога, і правда, і життя. До Отця не приходить ніхто, якщо не через Мене» (Івана 14:6)",
-        "«Бо так полюбив Бог світ, що віддав Сина Свого...» (Івана 3:16)",
+        "«Бо так полюбив Бог світ, що віддав Сина Свого Однородженого, щоб кожен, хто вірує в Нього, не загинув, а мав життя вічне» (Івана 3:16)",
         "«Господь — то мій Пастир, тому в недостатку не буду» (Псалом 22:1)",
-        "«Все можу в Тім, Хто мене підкріпляє...» (Филип'ян 4:13)"
+        "«Все можу в Тім, Хто мене підкріпляє — у Христі Ісусі» (Филип'ян 4:13)",
+        "«А всім, що Його прийняли, їм владу дало дітьми Божими стати, тим, що вірять у Ймення Його» (Івана 1:12)"
     ];
 
     async function fetchWeather() {
@@ -126,10 +154,7 @@
 
     function shareApp() {
         if (navigator.share) {
-            navigator.share({
-                title: 'Розклад Автобуса 283',
-                url: window.location.href
-            });
+            navigator.share({ title: 'Розклад Автобуса 283', url: window.location.href });
         }
     }
 
@@ -145,7 +170,6 @@
         document.querySelectorAll('td').forEach(t => t.classList.remove('selected'));
         el.classList.add('selected');
         document.getElementById('timer-block').style.display = 'block';
-        document.getElementById('calBtn').style.display = 'inline-block';
         updateTimer(time);
     }
 
