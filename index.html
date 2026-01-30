@@ -14,8 +14,29 @@
         .container { max-width: 600px; margin: auto; background: var(--card); border-radius: 12px; overflow: hidden; }
         header { background: #252525; padding: 25px 15px; text-align: center; border-bottom: 2px solid var(--accent); }
         h1 { margin: 0; font-size: 2.2rem; font-style: italic; text-transform: uppercase; letter-spacing: 2px; color: white; margin-bottom: 20px; }
-        .quote-box { display: inline-block; background: #2a2a2a; padding: 15px 25px; border-radius: 40px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6); border: 1px solid #444; max-width: 85%; }
-        #bible-quote { font-style: italic; font-weight: bold; font-size: 0.95rem; color: white; margin: 0; line-height: 1.5; }
+        
+        /* Оновлений блок цитат: прибрано обмеження, додано м'якість */
+        .quote-box { 
+            display: inline-block; 
+            background: #2a2a2a; 
+            padding: 15px 20px; 
+            border-radius: 25px; 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6); 
+            border: 1px solid #444; 
+            width: 90%; /* Займає більше місця для тексту */
+            box-sizing: border-box;
+            word-wrap: break-word; /* Щоб довгі слова не вилазили */
+        }
+        #bible-quote { 
+            font-style: italic; 
+            font-weight: bold; 
+            font-size: 0.95rem; 
+            color: white; 
+            margin: 0; 
+            line-height: 1.4; 
+            white-space: normal; /* Дозволяє тексту переноситись на нові рядки */
+        }
+
         #timer-block { background: #2a2a2a; padding: 15px; text-align: center; display: none; border-bottom: 1px solid var(--border); }
         #countdown { font-size: 1.6rem; color: var(--accent); font-weight: bold; }
         table { width: 100%; border-collapse: collapse; }
@@ -26,7 +47,7 @@
         .btn-cal, .btn-save { 
             display: block; margin: 10px auto; padding: 12px 20px; 
             background: var(--accent); color: #000; border: none; 
-            border-radius: 8px; font-weight: bold; cursor: pointer; width: 80%;
+            border-radius: 8px; font-weight: bold; cursor: pointer; width: 85%;
         }
         .btn-cal { display: none; }
 
@@ -89,8 +110,20 @@
         });
     }
 
-    const bibleVerses = ["«Я — дорога, і правда, і життя...» (Івана 14:6)", "«І нема ні в кім іншім спасіння...» (Дії 4:12)", "«Бо так полюбив Бог світ...» (Івана 3:16)", "«Бо заплата за гріх — смерть...» (Римлян 6:23)", "«Бо коли ти устами визнаватимеш Ісуса...» (Римлян 10:9)"];
-    window.onload = () => { document.getElementById('bible-quote').innerText = bibleVerses[Math.floor(Math.random() * bibleVerses.length)]; };
+    const bibleVerses = [
+        "«Промовляє до нього Ісус: Я — дорога, і правда, і життя. До Отця не приходить ніхто, якщо не через Мене» (Івана 14:6)",
+        "«І нема ні в кім іншім спасіння. Бо під небом нема іншого Ймення, даного людям, що ним би спастися ми мали» (Дії 4:12)",
+        "«Бо так полюбив Бог світ, що віддав Сина Свого Однородженого, щоб кожен, хто вірує в Нього, не загинув, а мав життя вічне» (Івана 3:16)",
+        "«Бо заплата за гріх — смерть, а дар Божий — життя вічне в Христі Ісусі, Господі нашім» (Римлян 6:23)",
+        "«Бо коли ти устами своїми визнаватимеш Ісуса за Господа, і серцем своїм віруватимеш, що Бог воскресив Його з мертвих, то спасешся» (Римлян 10:9)",
+        "«Бо один є Бог, і один Посередник між Богом та людьми, — Людина Христос Ісус» (1 Тимофія 2:5)",
+        "«А всім, що Його прийняли, їм владу дало дітьми Божими стати, тим, що вірять у Ймення Його» (Івана 1:12)",
+        "«Хто вірує в Сина, той має вічне життя; а хто в Сина не вірує, той життя не побачить» (Івана 3:36)"
+    ];
+
+    window.onload = () => { 
+        document.getElementById('bible-quote').innerText = bibleVerses[Math.floor(Math.random() * bibleVerses.length)]; 
+    };
 
     function copyLink() {
         const url = window.location.href;
