@@ -5,11 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Автобус 283</title>
     
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="manifest" href="manifest.json">
+
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
-    <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#121212">
 
     <style>
@@ -75,14 +78,13 @@
         table { width: 100%; border-collapse: collapse; border-top: 2px solid var(--accent); }
         th, td { padding: 12px 5px; text-align: center; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); font-size: 0.85rem; }
         
-        /* Стиль для нового рядка з напрямком */
         .route-label { 
             background: rgba(255, 255, 255, 0.03); 
             color: #888; 
             font-size: 0.7rem; 
             text-transform: uppercase; 
             letter-spacing: 0.5px;
-            pointer-events: none; /* Щоб не вибиралося як рейс */
+            pointer-events: none;
         }
 
         td { cursor: pointer; color: #fff; transition: background 0.2s; }
@@ -166,7 +168,7 @@
 </div>
 
 <script>
-    const SITE_VERSION = "1.0"; 
+    const SITE_VERSION = "1.1"; 
 
     function checkUpdates() {
         const savedVersion = localStorage.getItem('site_version');
