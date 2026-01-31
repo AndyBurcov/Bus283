@@ -1,199 +1,162 @@
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Автобус 283</title>
-    
-    <link rel="apple-touch-icon" href="logo.png">
-    <link rel="icon" type="image/png" href="logo.png">
-    <link rel="manifest" href="manifest.json">
+const SITE_VERSION = "2.1"; 
 
-    <meta name="theme-color" content="#121212">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+const schedule = [
+    { wd: "06:00 — 06:30", we: "06:30 — 07:10" },
+    { wd: "06:30 — 07:10", we: "07:30 — 08:10" },
+    { wd: "07:00 — 07:40", we: "08:50 — 09:30" },
+    { wd: "07:40 — 08:20", we: "10:30 — 11:30" },
+    { wd: "08:10 — 08:45", we: "12:30 — 13:30" },
+    { wd: "09:00 — 09:40", we: "14:30 — 15:30" },
+    { wd: "10:30 — 11:00", we: "16:40 — 17:20" },
+    { wd: "12:00 — 12:30", we: "18:00 — 18:40" },
+    { wd: "13:30 — 14:00", we: "19:40 — 20:10" },
+    { wd: "14:30 — 15:00", we: null },
+    { wd: "15:30 — 16:00", we: null },
+    { wd: "16:30 — 17:00", we: null },
+    { wd: "17:30 — 18:00", we: null },
+    { wd: "18:00 — 18:30", we: null },
+    { wd: "19:40 — 20:10", we: null }
+];
 
-    <style>
-        :root { --bg: #121212; --card: #1e1e1e; --text: #e0e0e0; --accent: #bb86fc; --border: #333; }
+const bibleVerses = [
+    "«Промовляє до нього Ісус: Я — дорога, і правда, і життя. До Батька не приходить ніхто, якщо не через Мене» (Від Івана 14:6)",
+    "«Бо так полюбив Бог світ, що віддав Сина Свого Однородженого, щоб кожен, хто вірує в Нього, не загинув, але мав життя вічне» (Від Івана 3:16)",
+    "«Господь — то мій Пастир, тому в недостатку не буду. Він на пасовиськах зелених оселить мене, на тихую воду мене запровадить» (Псалом 22:1-2)",
+    "«Все можу в Тім, Хто мене підкріпляє — у Христі Ісусі. Бо Бог не дав нам духа страху, але сили, любові та здорового розуму» (Филип'ян 4:13)",
+    "«Бо Я знаю ті думки, які думаю про вас, — говорить Господь, — думки про спокій, а не про лихо, щоб дати вам будучність та надію» (Єремії 29:11)",
+    "«Господь буде стерегти твій вихід та вхід твій відтепер і аж довіку. Він не дасть нозі твоїй спіткнутися, і не здрімає Той, Хто тебе стереже» (Псалом 120:3,8)",
+    "«Прийдіть до Мене, усі струджені та обтяжені, — і Я заспокою вас! Візьміть на себе ярмо Моє, і навчіться від Мене, бо Я тихий і серцем покірливий» (Від Матвія 11:28-29)"
+];
+
+function checkUpdates() {
+    document.getElementById('verDisplay').innerText = "v" + SITE_VERSION;
+    const savedVersion = localStorage.getItem('site_version');
+    if (savedVersion && savedVersion !== SITE_VERSION) {
+        localStorage.setItem('site_version', SITE_VERSION);
+        setTimeout(() => { window.location.reload(true); }, 500);
+    } else {
+        localStorage.setItem('site_version', SITE_VERSION);
+    }
+}
+
+async function fetchWeather() {
+    try {
+        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=48.50&longitude=32.26&current_weather=true&timezone=auto');
+        const dw = await res.json();
+        const temp = Math.round(dw.current_weather.temperature);
+        const code = dw.current_weather.weathercode;
+        document.getElementById('weather-info').innerText = `Кропивницький: ${temp}°C`;
         
-        html, body { 
-            background: #121212; 
-            margin: 0; 
-            padding: 0;
-            width: 100%;
-            overflow-x: hidden;
-            overscroll-behavior-y: contain;
-        }
-
-        body { 
-            font-family: -apple-system, sans-serif; 
-            color: var(--text); 
-            padding-bottom: 60px; 
-            min-height: 100vh;
-            /* Плавний градієнт фону */
-            background: linear-gradient(180deg, #2a2a2a 0%, #121212 300px, #121212 100%);
-            background-attachment: fixed;
-        }
-
-        header { 
-            position: fixed; 
-            top: 0; left: 0; right: 0; 
-            z-index: 1000;
-            background: rgba(18, 18, 18, 0.7); 
-            backdrop-filter: blur(20px); 
-            -webkit-backdrop-filter: blur(20px); 
-            display: flex;
-            align-items: center; justify-content: center;
-            height: 85px; 
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s;
-        }
-
-        h1 { margin: 0; font-size: 2.2rem; font-style: italic; text-transform: uppercase; letter-spacing: 2px; color: white; }
-        header.scrolled { height: 60px; }
-        header.scrolled h1 { font-size: 1.4rem; }
-
-        .container { 
-            max-width: 580px; 
-            margin: 110px 15px 20px 15px; /* Бокові відступи від країв */
-            background: var(--card); 
-            border-radius: 12px; 
-            overflow: hidden; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            position: relative;
-        }
-        /* Адаптація для великих екранів (центрування) */
-        @media (min-width: 610px) {
-            .container { margin-left: auto; margin-right: auto; }
+        let wish = "Гарної та благословенної вам дороги!";
+        
+        // ВИПРАВЛЕНО: Розширена логіка кодів погоди (WMO codes)
+        if (code >= 51 && code <= 67) {
+            wish = "☔️ Здається, на вулиці дощить. Не забудьте взяти парасольку!";
+        } else if (code >= 71 && code <= 86) {
+            wish = "❄️ На вулиці йде сніг. Будьте обережні та одягайтеся тепліше!";
+        } else if (temp < -2) {
+            wish = "❄️ На вулиці мороз. Одягайтеся тепліше, щоб не замерзнути!";
+        } else if (temp > 28) {
+            wish = "☀️ Сьогодні дуже спекотно. Візьміть із собою пляшечку води!";
+        } else if (code >= 1 && code <= 3) {
+            wish = "☁️ Сьогодні хмарно. Бажаємо вам гарної та комфортної поїздки!";
         }
         
-        /* Вужча рамка для віршів */
-        .quote-box { 
-            background: #2a2a2a; 
-            padding: 15px 20px; 
-            border-radius: 18px; 
-            border: 1px solid #444; 
-            margin: 20px auto; 
-            width: fit-content; 
-            max-width: 85%; 
-            text-align: center; 
+        document.getElementById('wish-text').innerText = wish;
+    } catch (e) { 
+        document.getElementById('weather-info').innerText = "Погода оновлюється"; 
+    }
+}
+
+function setMode(mode) {
+    const switcher = document.getElementById('switcher');
+    if (switcher) switcher.setAttribute('data-mode', mode);
+    document.getElementById('btn-market').classList.toggle('active', mode === 'market');
+    document.getElementById('btn-sozonivka').classList.toggle('active', mode === 'sozonivka');
+    const label = (mode === 'market') ? "Критий Ринок — Созонівка" : "Созонівка — Критий Ринок";
+    document.getElementById('label-main').innerText = label;
+    const body = document.getElementById('schedule-body');
+    body.innerHTML = '';
+    schedule.forEach(row => {
+        const tr = document.createElement('tr');
+        [row.wd, row.we].forEach(val => {
+            const td = document.createElement('td');
+            if (val) {
+                const parts = val.split(' — ');
+                const displayTime = (mode === 'market') ? parts[0] : parts[1];
+                td.innerText = displayTime;
+                td.onclick = (e) => selectTrip(displayTime, td, e);
+            } else { td.innerText = '-'; }
+            tr.appendChild(td);
+        });
+        body.appendChild(tr);
+    });
+    deselectAll();
+}
+
+let activeTime = "";
+function selectTrip(time, el, event) {
+    if (time === '-') return;
+    event.stopPropagation();
+    activeTime = time;
+    document.querySelectorAll('td').forEach(t => t.classList.remove('selected'));
+    el.classList.add('selected');
+    document.getElementById('timer-block').classList.add('visible');
+    document.getElementById('calBtn').style.display = 'inline-block';
+    updateTimer(time);
+}
+
+function deselectAll() {
+    activeTime = "";
+    document.querySelectorAll('td').forEach(t => t.classList.remove('selected'));
+    document.getElementById('timer-block').classList.remove('visible');
+    if (window.tInt) clearInterval(window.tInt);
+}
+
+function updateTimer(time) {
+    const [h, m] = time.split(':');
+    let target = new Date(); target.setHours(parseInt(h), parseInt(m), 0);
+    if (target < new Date()) target.setDate(target.getDate() + 1);
+    if (window.tInt) clearInterval(window.tInt);
+    window.tInt = setInterval(() => {
+        const diff = target - new Date();
+        if (diff <= 0) { 
+            clearInterval(window.tInt); 
+            document.getElementById('countdown').innerText = "Рейс відійшов"; 
+            return; 
         }
-        #bible-quote { font-style: italic; font-size: 0.9rem; color: white; line-height: 1.5; }
-        
-        .weather-wish-box { padding: 10px; text-align: center; margin-bottom: 10px; }
-        #weather-info { font-weight: bold; color: var(--accent); margin-bottom: 5px; display: block; }
-        #wish-text { color: #aaa; font-style: italic; font-size: 0.9rem; line-height: 1.4; display: block; }
+        const hrs = Math.floor(diff/3600000).toString().padStart(2,'0');
+        const mns = Math.floor((diff%3600000)/60000).toString().padStart(2,'0');
+        const scs = Math.floor((diff%60000)/1000).toString().padStart(2,'0');
+        document.getElementById('countdown').innerText = "До рейсу: " + hrs+":"+mns+":"+scs;
+    }, 1000);
+}
 
-        .switcher-container {
-            position: relative;
-            display: flex;
-            background: #252525;
-            margin: 10px 20px 25px;
-            border-radius: 12px;
-            padding: 4px;
-            border: 1px solid var(--border);
-            z-index: 1;
-        }
-        
-        .sw-btn {
-            position: relative;
-            flex: 1;
-            padding: 12px 5px;
-            border: none;
-            background: transparent;
-            color: #888;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 0.75rem;
-            z-index: 2;
-            transition: color 0.3s ease;
-            text-transform: uppercase;
-        }
-        
-        .sw-btn.active { color: #000; }
+function addToCalendar() {
+    if (!activeTime) return;
+    const [h, m] = activeTime.split(':');
+    let start = new Date(); start.setHours(parseInt(h), parseInt(m), 0);
+    const fmt = d => d.toISOString().replace(/-|:|\.\d+/g, '');
+    const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:Автобус 283\nDTSTART:${fmt(start)}\nDTEND:${fmt(new Date(start.getTime()+1800000))}\nEND:VEVENT\nEND:VCALENDAR`;
+    const url = URL.createObjectURL(new Blob([icsData], { type: 'text/calendar' }));
+    const a = document.createElement('a'); a.href = url; a.download = 'bus283.ics'; a.click();
+}
 
-        .sw-slider {
-            position: absolute;
-            top: 4px;
-            left: 4px;
-            width: calc(50% - 4px);
-            height: calc(100% - 8px);
-            background: var(--accent);
-            border-radius: 9px;
-            z-index: 1;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+function shareApp() { 
+    if (navigator.share) {
+        navigator.share({ title: 'Розклад 283', url: window.location.href });
+    } 
+}
 
-        [data-mode="sozonivka"] .sw-slider { transform: translateX(100%); }
+window.onscroll = function() {
+    const header = document.getElementById("mainHeader");
+    if (window.pageYOffset > 50) header.classList.add("scrolled");
+    else header.classList.remove("scrolled");
+};
 
-        #timer-block { 
-            background: #252525; text-align: center; border-top: 2px solid var(--accent);
-            opacity: 0; max-height: 0; overflow: hidden; transition: all 0.4s;
-        }
-        #timer-block.visible { opacity: 1; max-height: 130px; padding: 15px; }
-        #countdown { font-size: 1.6rem; color: var(--accent); font-weight: bold; display: block; margin-bottom: 10px; }
-        
-        table { width: 100%; border-collapse: collapse; border-top: 2px solid var(--accent); }
-        th, td { padding: 12px 5px; text-align: center; border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); font-size: 0.85rem; }
-        .route-label { background: rgba(255, 255, 255, 0.03); color: #888; font-size: 0.75rem; text-transform: uppercase; pointer-events: none; border-right: none; }
-        td { cursor: pointer; color: #fff; transition: background 0.2s; }
-        .selected { background: #3700b3 !important; }
-
-        .share-btn { display: block; width: 200px; margin: 30px auto; padding: 12px; background: transparent; border: 2px solid var(--accent); color: var(--accent); border-radius: 30px; font-weight: bold; cursor: pointer; text-align: center; }
-
-        /* Розгорнуті підказки */
-        .instructions { margin: 30px 15px; max-width: 580px; padding: 15px; color: #bbb; line-height: 1.6; border-top: 1px solid var(--border); }
-        @media (min-width: 610px) { .instructions { margin-left: auto; margin-right: auto; } }
-        .instructions h3 { color: var(--accent); font-size: 1.0rem; margin-bottom: 20px; text-align: center; font-weight: 600; }
-        .step { margin-bottom: 12px; background: #1a1a1a; padding: 15px; border-radius: 12px; font-size: 0.85rem; }
-        .step b { color: white; }
-
-        .btn-cal { padding: 10px 20px; background: var(--accent); color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: none; margin: 0 auto; }
-    </style>
-</head>
-<body onclick="deselectAll(event)">
-
-<header id="mainHeader">
-    <h1>Автобус 283</h1>
-</header>
-
-<div class="container" onclick="event.stopPropagation()">
-    <div class="quote-box"><div id="bible-quote">Завантаження...</div></div>
-    
-    <div class="weather-wish-box">
-        <span id="weather-info">Оновлення погоди...</span>
-        <span id="wish-text">Гарної дороги!</span>
-    </div>
-
-    <div class="switcher-container" id="switcher">
-        <div class="sw-slider"></div>
-        <button id="btn-market" class="sw-btn active" onclick="setMode('market')">З Критого Ринку</button>
-        <button id="btn-sozonivka" class="sw-btn" onclick="setMode('sozonivka')">Із Созонівки</button>
-    </div>
-
-    <div id="timer-block">
-        <span id="countdown">00:00:00</span>
-        <button class="btn-cal" id="calBtn" onclick="addToCalendar()">📅 Нагадати</button>
-    </div>
-
-    <table>
-        <thead><tr><th>Пн — Пт</th><th>Сб — Нд</th></tr></thead>
-        <tbody>
-            <tr><td colspan="2" class="route-label" id="label-main">Завантаження...</td></tr>
-        </tbody>
-        <tbody id="schedule-body"></tbody>
-    </table>
-</div>
-
-<button class="share-btn" onclick="shareApp(); event.stopPropagation()">🔗 ПОДІЛИТИСЯ</button>
-
-<div class="instructions" onclick="event.stopPropagation()">
-    <h3>Як зберегти розклад на телефоні?</h3>
-    <div class="step"><b>Android (Chrome):</b> Натисніть на три крапки (⋮) у правому верхньому куті та оберіть <b>«Додати на головний екран»</b>.</div>
-    <div class="step"><b>iPhone (Safari):</b> Натисніть кнопку «Поділитися» (квадрат зі стрілкою вгору) у нижній панелі та оберіть <b>«На початковий екран»</b>.</div>
-    <div class="step"><b>Як зробити закладку?</b> У налаштуваннях вашого браузера натисніть на <b>зірочку (★)</b> або в меню оберіть <b>«Додати до закладок»</b> для швидкого доступу.</div>
-</div>
-
-<script src="script.js"></script>
-
-</body>
-</html>
+window.onload = function() {
+    checkUpdates();
+    document.getElementById('bible-quote').innerText = bibleVerses[Math.floor(Math.random() * bibleVerses.length)];
+    fetchWeather();
+    setMode('market');
+};
