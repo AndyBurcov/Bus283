@@ -1,4 +1,4 @@
-const SITE_VERSION = "2.2"; 
+const SITE_VERSION = "2.3"; 
 
 const schedule = [
     { wd: "06:00 — 06:30", we: "06:30 — 07:10" },
@@ -19,6 +19,11 @@ const schedule = [
 ];
 
 function checkUpdates() {
+    // Відображаємо версію в кутку сторінки
+    if (document.getElementById('verDisplay')) {
+        document.getElementById('verDisplay').innerText = "v" + SITE_VERSION;
+    }
+
     const savedVersion = localStorage.getItem('site_version');
     if (savedVersion && savedVersion !== SITE_VERSION) {
         localStorage.setItem('site_version', SITE_VERSION);
@@ -74,12 +79,18 @@ async function fetchWeather() {
         const dw = await res.json();
         const temp = Math.round(dw.current_weather.temperature);
         const code = dw.current_weather.weathercode;
+        
         document.getElementById('weather-info').innerText = `Кропивницький: ${temp}°C`;
         
         let wish = "Гарної та благословенної дороги!";
         
-        if (code >= 51) {
+        // ВИПРАВЛЕНА ЛОГІКА: Спочатку перевіряємо коди опадів (WMO codes)
+        if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) {
             wish = "☔️ На вулиці дощить. Не забудьте парасольку!";
+        } else if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86)) {
+            wish = "❄️ На вулиці сніг. Будьте обережні та одягайтеся тепліше!";
+        } else if (code >= 95) {
+            wish = "⛈ Обережно, прогнозується гроза!";
         } else if (temp < -2) {
             wish = "❄️ На вулиці мороз. Одягайтеся тепліше!";
         } else if (temp > 28) {
