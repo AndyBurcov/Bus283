@@ -47,28 +47,15 @@ async function fetchWeather() {
         const dw = await res.json();
         const temp = Math.round(dw.current_weather.temperature);
         const code = parseInt(dw.current_weather.weathercode);
-        
         document.getElementById('weather-info').innerText = `Кропивницький: ${temp}°C`;
-        
         let wish = "Гарної та благословенної дороги!";
-        
-        // Перевірка умов по черзі
-        if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) {
-            wish = "☔️ На вулиці дощить. Не забудьте парасольку!";
-        } else if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86)) {
-            wish = "❄️ На вулиці сніг. Одягайтеся тепліше!";
-        } else if (code >= 95) {
-            wish = "⛈ Обережно, прогнозується гроза!";
-        } else if (temp <= -1) {
-            wish = "❄️ На вулиці мороз. Одягайтеся тепліше!";
-        } else if (temp >= 28) {
-            wish = "☀️ Сьогодні спекотно. Візьміть пляшечку води!";
-        } else if (code === 0) {
-            wish = "☀️ Сьогодні ясно. Бажаємо чудової подорожі!";
-        } else if (code >= 1 && code <= 3) {
-            wish = "☁️ Сьогодні хмарно. Комфортної поїздки!";
-        }
-        
+        if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) wish = "☔️ На вулиці дощить. Не забудьте парасольку!";
+        else if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86)) wish = "❄️ На вулиці сніг. Одягайтеся тепліше!";
+        else if (code >= 95) wish = "⛈ Обережно, прогнозується гроза!";
+        else if (temp <= -1) wish = "❄️ На вулиці мороз. Одягайтеся тепліше!";
+        else if (temp >= 28) wish = "☀️ Сьогодні спекотно. Візьміть пляшечку води!";
+        else if (code === 0) wish = "☀️ Сьогодні ясно. Бажаємо чудової подорожі!";
+        else if (code >= 1 && code <= 3) wish = "☁️ Сьогодні хмарно. Комфортної поїздки!";
         document.getElementById('wish-text').innerText = wish;
     } catch (e) { 
         document.getElementById('weather-info').innerText = "Погода оновлюється"; 
@@ -157,7 +144,9 @@ function shareApp() {
 
 window.onscroll = function() {
     const header = document.getElementById("mainHeader");
-    if (window.pageYOffset > 50) header.classList.add("scrolled");
+    const offset = window.pageYOffset || document.documentElement.scrollTop;
+    // Збільшений поріг для стабільності
+    if (offset > 80) header.classList.add("scrolled");
     else header.classList.remove("scrolled");
 };
 
