@@ -21,7 +21,6 @@
             padding: 0;
             width: 100%;
             overflow-x: hidden;
-            /* Прибрали contain, щоб повернути скрол */
         }
 
         body { 
@@ -53,12 +52,32 @@
             align-items: center; justify-content: center;
             height: 85px; 
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s;
+            /* Плавна зміна висоти */
+            transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: height;
         }
 
-        h1 { margin: 0; font-size: 2.2rem; font-style: italic; text-transform: uppercase; letter-spacing: 2px; color: white; }
-        header.scrolled { height: 60px; }
-        header.scrolled h1 { font-size: 1.4rem; }
+        h1 { 
+            margin: 0; 
+            font-size: 2.2rem; 
+            font-style: italic; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            color: white;
+            /* Плавне зменшення через scale для ідеальної гладкості */
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center;
+            will-change: transform;
+        }
+
+        header.scrolled { 
+            height: 60px; 
+        }
+
+        header.scrolled h1 { 
+            /* Масштабуємо текст до ~1.4rem (0.65 від оригіналу) */
+            transform: scale(0.65); 
+        }
 
         .container { 
             max-width: 580px; 
