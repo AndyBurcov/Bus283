@@ -437,56 +437,58 @@
         }
 
         .share-btn {
-            display: block;
-            width: 200px;
-            margin: 30px auto;
-            padding: 12px;
-            background: transparent;
-            border: 2px solid var(--accent);
-            color: var(--accent);
-            border-radius: 30px;
-            font-weight: bold;
-            cursor: pointer;
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: relative;
-            overflow: hidden;
+    display: block;
+    width: 200px;
+    margin: 30px auto;
+    padding: 12px;
+    background: transparent;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    border-radius: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+    will-change: transform; 
 
-            /* --- ОНОВЛЕНА АНІМАЦІЯ --- */
-            /* Швидкий відгук (0.1s) на клік, але плавне пружинисте повернення (0.4s) */
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    /* --- ОНОВЛЕНА АНІМАЦІЯ --- */
+    /* Швидкий відгук (0.1s) на клік, але плавне пружинисте повернення (0.4s) */
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
                 background 0.3s ease;
 
-            /* Обов'язково для телефонів */
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
-        }
+    /* Обов'язково для телефонів */
+    -webkit-tap-highlight-color: transparent; /* Прибираємо стандартне сине виділення системи */
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    touch-action: manipulation;
+}
 
-        /* Ефект при натисканні (Мобільні + ПК) */
-        .share-btn:active {
-            /* Зменшуємо трохи сильніше для помітності на тачскріні */
-            transform: scale(0.94);
-            background: rgba(187, 134, 252, 0.2);
+/* Ефект при натисканні (Мобільні + ПК) */
+.share-btn:active {
+    /* Зменшуємо трохи сильніше для помітності на тачскріні */
+    transform: scale(0.92) !important; /* Трохи підсилили стискання для тактильності */
+    background: rgba(187, 134, 252, 0.25) !important;
 
-            /* Миттєве стискання при дотику */
-            transition: transform 0.1s ease-out;
-        }
+    /* Миттєве стискання при дотику */
+    transition: transform 0.05s ease-out !important;
+}
 
-        /* Бігучий відблиск (залишаємо без змін, він крутий) */
-        .share-btn::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 50%;
-            height: 100%;
-            background: linear-gradient(to right,
-                    transparent,
-                    rgba(255, 255, 255, 0.2),
-                    transparent);
-            transform: skewX(-25deg);
-        }
+/* Бігучий відблиск (залишаємо без змін, він крутий) */
+.share-btn::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent);
+    transform: skewX(-25deg);
+}
 
         .instructions {
             margin: 30px 15px;
