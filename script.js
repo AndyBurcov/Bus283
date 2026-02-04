@@ -129,23 +129,17 @@ function updateTimer(time) {
 function addToCalendar() {
     if (!activeTime) return;
     
-    // Додано затримку 150мс для анімації кнопки
-    setTimeout(() => {
-        const [h, m] = activeTime.split(':');
-        let start = new Date(); start.setHours(parseInt(h), parseInt(m), 0);
-        const fmt = d => d.toISOString().replace(/-|:|\.\d+/g, '');
-        const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:Автобус 283\nDTSTART:${fmt(start)}\nDTEND:${fmt(new Date(start.getTime()+1800000))}\nEND:VEVENT\nEND:VCALENDAR`;
-        const url = URL.createObjectURL(new Blob([icsData], { type: 'text/calendar' }));
-        const a = document.createElement('a'); a.href = url; a.download = 'bus283.ics'; a.click();
-    }, 150);
+    const [h, m] = activeTime.split(':');
+    let start = new Date(); start.setHours(parseInt(h), parseInt(m), 0);
+    const fmt = d => d.toISOString().replace(/-|:|\.\d+/g, '');
+    const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:Автобус 283\nDTSTART:${fmt(start)}\nDTEND:${fmt(new Date(start.getTime()+1800000))}\nEND:VEVENT\nEND:VCALENDAR`;
+    const url = URL.createObjectURL(new Blob([icsData], { type: 'text/calendar' }));
+    const a = document.createElement('a'); a.href = url; a.download = 'bus283.ics'; a.click();
 }
 
 function shareApp() { 
     if (navigator.share) {
-        // Додано затримку 150мс для анімації кнопки
-        setTimeout(() => {
-            navigator.share({ title: 'Розклад 283', url: window.location.href });
-        }, 150);
+        navigator.share({ title: 'Розклад 283', url: window.location.href });
     } 
 }
 
