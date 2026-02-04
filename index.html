@@ -286,24 +286,6 @@
             margin-bottom: 12px;
         }
 
-        /* --- ОНОВЛЕНА АНІМАЦІЯ --- */
-        @keyframes click-bounce {
-            0% {
-                transform: scale(1);
-                background: rgba(187, 134, 252, 0.089);
-            }
-
-            50% {
-                transform: scale(0.92);
-                background: rgba(255, 255, 255, 0.3);
-            }
-
-            100% {
-                transform: scale(1);
-                background: rgba(187, 134, 252, 0.089);
-            }
-        }
-
         #timer-block button {
             background: rgba(187, 134, 252, 0.089);
             color: #cfcfcf;
@@ -315,9 +297,9 @@
             font-size: 0.8rem;
             letter-spacing: 1px;
             cursor: pointer;
-            /* Пружинисте повернення (працює після закінчення анімації) */
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s ease;
             -webkit-tap-highlight-color: transparent;
+            outline: none;
             touch-action: manipulation;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
@@ -326,15 +308,6 @@
             background: rgba(143, 143, 143, 0.15);
             transform: translateY(-2px);
             border-color: rgba(255, 255, 255, 0.4);
-        }
-
-        #timer-block button:active {
-            /* Видалено forwards, щоб кнопка не залипала в білому кольорі */
-            animation: click-bounce 0.2s ease-out;
-
-            /* Миттєвий пріоритет для анімації */
-            transition: none !important;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
         table {
@@ -435,12 +408,6 @@
             touch-action: manipulation;
         }
 
-        .share-btn:active {
-            transition: none !important;
-            animation: click-bounce 0.2s ease-out forwards;
-            background: rgba(187, 134, 252, 0.25) !important;
-        }
-
         .share-btn::after {
             content: "";
             position: absolute;
@@ -488,12 +455,6 @@
         .step b {
             color: white;
         }
-
-        .btn-cal {
-            display: none;
-        }
-
-        /* Керується через JS (ID calBtn) */
     </style>
 </head>
 
@@ -559,6 +520,39 @@
     </div>
 
     <script src="script.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const interactiveElements = document.querySelectorAll('#timer-block button, .share-btn, .sw-btn');
+
+            interactiveElements.forEach(el => {
+                const press = () => {
+                    el.style.transform = 'scale(0.92)';
+                    el.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+                    el.style.transition = 'none';
+                };
+
+                const release = () => {
+                    // Використовуємо requestAnimationFrame для плавності або мінімальну затримку
+                    setTimeout(() => {
+                        el.style.transform = '';
+                        el.style.backgroundColor = '';
+                        el.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.2s ease';
+                    }, 80);
+                };
+
+                // Події для мобільних пристроїв
+                el.addEventListener('touchstart', press, { passive: true });
+                el.addEventListener('touchend', release);
+                el.addEventListener('touchmove', release); // Якщо палець зсунувся — скасовуємо виділення
+
+                // Події для мишки
+                el.addEventListener('mousedown', press);
+                el.addEventListener('mouseup', release);
+                el.addEventListener('mouseleave', release);
+            });
+        });
+    </script>
 
 </body>
 
