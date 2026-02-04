@@ -238,6 +238,8 @@
             z-index: 2;
             transition: color 0.3s ease;
             text-transform: uppercase;
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
         }
 
         .sw-btn.active {
@@ -329,6 +331,16 @@
             font-size: 0.85rem;
         }
 
+        /* Прибираємо лінію в останньому рядку */
+        #schedule-body tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Прибираємо праву лінію в останній колонці */
+        th:last-child, td:last-child {
+            border-right: none;
+        }
+
         .route-label {
             background: rgba(255, 255, 255, 0.03);
             color: #888;
@@ -406,6 +418,7 @@
             mask-image: radial-gradient(white, black);
             -webkit-mask-image: -webkit-radial-gradient(white, black);
             touch-action: manipulation;
+            outline: none;
         }
 
         .share-btn::after {
@@ -533,7 +546,6 @@
                 };
 
                 const release = () => {
-                    // Використовуємо requestAnimationFrame для плавності або мінімальну затримку
                     setTimeout(() => {
                         el.style.transform = '';
                         el.style.backgroundColor = '';
@@ -541,12 +553,10 @@
                     }, 80);
                 };
 
-                // Події для мобільних пристроїв
                 el.addEventListener('touchstart', press, { passive: true });
                 el.addEventListener('touchend', release);
-                el.addEventListener('touchmove', release); // Якщо палець зсунувся — скасовуємо виділення
+                el.addEventListener('touchmove', release);
 
-                // Події для мишки
                 el.addEventListener('mousedown', press);
                 el.addEventListener('mouseup', release);
                 el.addEventListener('mouseleave', release);
