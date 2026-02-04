@@ -128,27 +128,33 @@ function updateTimer(time) {
 
 function addToCalendar() {
     if (!activeTime) return;
-    const [h, m] = activeTime.split(':');
-    let start = new Date(); start.setHours(parseInt(h), parseInt(m), 0);
-    const fmt = d => d.toISOString().replace(/-|:|\.\d+/g, '');
-    const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:Автобус 283\nDTSTART:${fmt(start)}\nDTEND:${fmt(new Date(start.getTime()+1800000))}\nEND:VEVENT\nEND:VCALENDAR`;
-    const url = URL.createObjectURL(new Blob([icsData], { type: 'text/calendar' }));
-    const a = document.createElement('a'); a.href = url; a.download = 'bus283.ics'; a.click();
+    
+    // Додано затримку 150мс для анімації кнопки
+    setTimeout(() => {
+        const [h, m] = activeTime.split(':');
+        let start = new Date(); start.setHours(parseInt(h), parseInt(m), 0);
+        const fmt = d => d.toISOString().replace(/-|:|\.\d+/g, '');
+        const icsData = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:Автобус 283\nDTSTART:${fmt(start)}\nDTEND:${fmt(new Date(start.getTime()+1800000))}\nEND:VEVENT\nEND:VCALENDAR`;
+        const url = URL.createObjectURL(new Blob([icsData], { type: 'text/calendar' }));
+        const a = document.createElement('a'); a.href = url; a.download = 'bus283.ics'; a.click();
+    }, 150);
 }
 
 function shareApp() { 
     if (navigator.share) {
-        navigator.share({ title: 'Розклад 283', url: window.location.href });
+        // Додано затримку 150мс для анімації кнопки
+        setTimeout(() => {
+            navigator.share({ title: 'Розклад 283', url: window.location.href });
+        }, 150);
     } 
 }
 
 window.onscroll = function() {
     let scroll = window.pageYOffset || document.documentElement.scrollTop;
     
-    // 0.05 - це дуже плавне, благородне обертання  
     document.documentElement.style.setProperty('--angle-1', (scroll * 2) + 'deg');
     document.documentElement.style.setProperty('--angle-2', (scroll * -0.8) + 'deg');
-    // Твоя логіка хедера залишається без змін
+    
     const header = document.getElementById("mainHeader");
     if (scroll > 50) {
         header.classList.add("scrolled");
