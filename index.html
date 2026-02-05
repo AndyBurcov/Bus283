@@ -38,7 +38,6 @@
             padding: 0;
             width: 100%;
             overflow-x: hidden;
-            /* Запобігає системним коливанням на iOS */
             touch-action: pan-y;
         }
 
@@ -50,6 +49,16 @@
             background: linear-gradient(180deg, #2a2a2a 0%, #121212 300px, #121212 100%);
             background-attachment: fixed;
             position: relative;
+        }
+
+        /* Фоновий шар для закриття */
+        #bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
         }
 
         .stars-layer {
@@ -68,7 +77,7 @@
             left: -25px;
             width: 100px;
             height: 100px;
-            rotate: calc(-120deg);
+            rotate: -120deg;
             opacity: 0.8;
             filter: blur(3px);
             transform: rotate(var(--angle-1, 0deg));
@@ -103,22 +112,12 @@
             }
         }
 
-        .version-tag {
-            position: absolute;
-            top: calc(env(safe-area-inset-top) + 10px);
-            right: 15px;
-            font-size: 0.65rem;
-            color: rgba(255, 255, 255, 0.3);
-            z-index: 1001;
-            pointer-events: none;
-        }
-
         header {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            z-index: 1000;
+            z-index: 1001;
             background: rgba(18, 18, 18, 0.7);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
@@ -128,12 +127,6 @@
             padding-top: env(safe-area-inset-top);
             height: 65px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            /* Фіксація для iOS */
-            will-change: height;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-            transform: translateZ(0);
         }
 
         h1 {
@@ -145,16 +138,6 @@
             letter-spacing: 2px;
             color: white;
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            transform-origin: center;
-            will-change: transform;
-        }
-
-        header.scrolled {
-            height: 60px;
-        }
-
-        header.scrolled h1 {
-            transform: scale(0.65);
         }
 
         .container {
@@ -162,11 +145,9 @@
             margin: calc(75px + env(safe-area-inset-top)) 15px 20px 15px;
             background: var(--card);
             border-radius: 12px;
-            overflow: visible;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             position: relative;
-            transform-style: preserve-3d;
-            z-index: 1;
+            z-index: 10;
         }
 
         @media (min-width: 610px) {
@@ -176,10 +157,61 @@
             }
         }
 
+        /* Стилі кнопок та їх підсвічування */
+        .sw-btn,
+        #calBtn,
+        .share-btn {
+            transition: transform 0.1s ease, background 0.2s ease, opacity 0.2s ease;
+        }
+
+        /* ПІДСВІЧУВАННЯ ПРИ НАТИСКАННІ */
+        #calBtn:active {
+            background: rgba(187, 134, 252, 0.3) !important;
+        }
+
+        .share-btn:active {
+            background: rgba(187, 134, 252, 0.2) !important;
+        }
+
+        .sw-btn:active {
+            opacity: 0.7;
+        }
+
+        #timer-block button {
+            background: rgba(187, 134, 252, 0.089);
+            color: #cfcfcf;
+            border: 1px solid rgba(255, 255, 255, 0.089);
+            padding: 8px 20px 10px 20px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .share-btn {
+            display: block;
+            width: 200px;
+            margin: 30px auto;
+            padding: 12px;
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            text-transform: uppercase;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Утиліти для таблиці та інше (без змін) */
         .quote-box {
             background: rgba(42, 42, 42, 0.6);
             backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(12px);
             padding: 15px 20px;
             border-radius: 18px;
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -228,7 +260,6 @@
             border-radius: 12px;
             padding: 4px;
             border: 1px solid var(--border);
-            z-index: 1;
             overflow: hidden;
         }
 
@@ -243,12 +274,9 @@
             font-weight: bold;
             font-size: 0.75rem;
             z-index: 2;
-            transition: color 0.3s ease;
             text-transform: uppercase;
-            -webkit-tap-highlight-color: transparent;
-            -webkit-touch-callout: none;
-            user-select: none;
             outline: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .sw-btn.active {
@@ -274,7 +302,6 @@
         #timer-block {
             background: rgba(35, 35, 35, 0.7);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             text-align: center;
             border-top: 2px solid var(--accent);
             opacity: 0;
@@ -297,51 +324,19 @@
             margin-bottom: 12px;
         }
 
-        #timer-block button {
-            background: rgba(187, 134, 252, 0.089);
-            color: #cfcfcf;
-            border: 1px solid rgba(255, 255, 255, 0.089);
-            padding: 8px 20px 10px 20px;
-            border-radius: 12px;
-            font-weight: normal;
-            text-transform: none;
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s ease;
-            -webkit-tap-highlight-color: transparent;
-            outline: none;
-            touch-action: manipulation;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        #timer-block button:hover {
-            background: rgba(143, 143, 143, 0.15);
-            transform: translateY(-2px);
-            border-color: rgba(255, 255, 255, 0.4);
-        }
-
         table {
             border-top: 2px solid var(--accent);
-            border-spacing: 0;
-            table-layout: fixed;
             width: 100%;
             border-collapse: collapse;
-            transform-style: preserve-3d;
         }
 
         th,
         td {
-            border-top: none;
             padding: 12px 5px;
             text-align: center;
             border-bottom: 1px solid var(--border);
             border-right: 1px solid var(--border);
             font-size: 0.85rem;
-        }
-
-        #schedule-body tr:last-child td {
-            border-bottom: none;
         }
 
         th:last-child,
@@ -355,22 +350,19 @@
             font-size: 0.75rem;
             text-transform: uppercase;
             pointer-events: none;
-            border-right: none;
         }
 
         td {
             cursor: pointer;
             color: #fff;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            will-change: transform opacity;
+            transition: all 0.4s ease;
             position: relative;
+            -webkit-tap-highlight-color: transparent;
         }
 
         td.selected {
-            position: relative;
             z-index: 10;
             color: #fff !important;
-            border-color: transparent !important;
         }
 
         td.selected::before {
@@ -387,9 +379,7 @@
             animation: fadeInScale 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
             border-radius: 18px;
             border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
             z-index: -1;
-            pointer-events: none;
         }
 
         @keyframes fadeInScale {
@@ -404,56 +394,14 @@
             }
         }
 
-        .share-btn {
-            display: block;
-            width: 200px;
-            margin: 30px auto;
-            padding: 12px;
-            background: transparent;
-            border: 2px solid var(--accent);
-            color: var(--accent);
-            border-radius: 30px;
-            font-weight: bold;
-            cursor: pointer;
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: relative;
-            overflow: hidden;
-            will-change: transform;
-            -webkit-tap-highlight-color: transparent;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s ease;
-            mask-image: radial-gradient(white, black);
-            -webkit-mask-image: -webkit-radial-gradient(white, black);
-            touch-action: manipulation;
-            outline: none;
-        }
-
-        .share-btn::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 50%;
-            height: 100%;
-            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transform: skewX(-25deg);
-        }
-
         .instructions {
             margin: 30px 15px;
-            max-width: 580px;
             padding: 15px;
             color: #bbb;
             line-height: 1.6;
             border-top: 1px solid var(--border);
-        }
-
-        @media (min-width: 610px) {
-            .instructions {
-                margin-left: auto;
-                margin-right: auto;
-            }
+            position: relative;
+            z-index: 10;
         }
 
         .instructions h3 {
@@ -461,8 +409,6 @@
             font-size: 1.0rem;
             margin-bottom: 15px;
             text-align: center;
-            font-weight: 600;
-            letter-spacing: 1px;
         }
 
         .step {
@@ -476,11 +422,21 @@
         .step b {
             color: white;
         }
+
+        .version-tag {
+            position: absolute;
+            top: calc(env(safe-area-inset-top) + 10px);
+            right: 15px;
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.3);
+            z-index: 1002;
+            pointer-events: none;
+        }
     </style>
 </head>
 
-<body onclick="deselectAll(event)">
-
+<body>
+    <div id="bg-overlay" onclick="deselectAll(event)"></div>
     <div class="version-tag" id="verDisplay">v...</div>
 
     <header id="mainHeader">
@@ -502,13 +458,13 @@
 
         <div class="switcher-container" id="switcher">
             <div class="sw-slider"></div>
-            <button id="btn-market" class="sw-btn active" onclick="setMode('market')">З Критого Ринку</button>
-            <button id="btn-sozonivka" class="sw-btn" onclick="setMode('sozonivka')">Із Созонівки</button>
+            <button id="btn-market" class="sw-btn active">З Критого Ринку</button>
+            <button id="btn-sozonivka" class="sw-btn">Із Созонівки</button>
         </div>
 
         <div id="timer-block">
             <span id="countdown">00:00:00</span>
-            <button id="calBtn" onclick="addToCalendar()">📅 Нагадати</button>
+            <button id="calBtn">📅 Нагадати</button>
         </div>
 
         <table>
@@ -527,17 +483,13 @@
         </table>
     </div>
 
-    <button class="share-btn" onclick="shareApp(); event.stopPropagation()">🔗 ПОДІЛИТИСЯ</button>
+    <button class="share-btn">🔗 ПОДІЛИТИСЯ</button>
 
     <div class="instructions" onclick="event.stopPropagation()">
         <h3>Як зберегти розклад на телефоні?</h3>
-        <div class="step"><b>Android (Chrome):</b> Натисніть на три крапки (⋮) у правому верхньому куті та оберіть
-            <b>«Додати на головний екран»</b>.
+        <div class="step"><b>Android (Chrome):</b> Натисніть на три крапки (⋮) та <b>«Додати на головний екран»</b>.
         </div>
-        <div class="step"><b>iPhone (Safari):</b> Натисніть кнопку «Поділитися» (квадрат зі стрілкою вгору) у нижній
-            панелі та оберіть <b>«На початковий екран»</b>.</div>
-        <div class="step"><b>Як зробити закладку?</b> У налаштуваннях браузера натисніть на <b>зірочку (★)</b> або в
-            меню оберіть <b>«Додати до закладок»</b>.</div>
+        <div class="step"><b>iPhone (Safari):</b> Натисніть «Поділитися» та оберіть <b>«На початковий екран»</b>.</div>
     </div>
 
     <script src="script.js"></script>
@@ -548,47 +500,37 @@
 
             interactiveElements.forEach(el => {
                 const press = (e) => {
-                    if (e.type === 'touchstart' && !el.classList.contains('sw-btn')) {
-                        e.preventDefault();
-                    }
-
-                    // Додано translateZ(0) для фіксації шарів на iOS
-                    el.style.transform = 'scale(0.97) translateZ(0)';
-                    el.style.transition = 'none';
-
-                    if (!el.classList.contains('sw-btn')) {
-                        el.style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
-                    } else {
-                        el.style.backgroundColor = 'transparent';
-                    }
+                    e.stopPropagation();
+                    el.style.transform = 'scale(0.96) translateZ(0)';
                 };
 
                 const release = (e) => {
+                    e.stopPropagation();
                     setTimeout(() => {
-                        // Повертаємо стан з апаратною акселерацією
-                        el.style.transform = 'translateZ(0)';
-                        el.style.backgroundColor = '';
-                        el.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.2s ease';
+                        el.style.transform = 'scale(1) translateZ(0)';
                     }, 80);
 
                     if (e.type === 'touchend' || e.type === 'mouseup') {
                         if (el.id === 'calBtn') {
-                            if (typeof addToCalendar === 'function') addToCalendar();
+                            e.preventDefault();
+                            if (typeof addToCalendar === 'function') addToCalendar(e);
                         } else if (el.classList.contains('share-btn')) {
-                            if (typeof shareApp === 'function') shareApp();
+                            if (typeof shareApp === 'function') shareApp(e);
+                        } else if (el.id === 'btn-market') {
+                            if (typeof setMode === 'function') setMode('market');
+                        } else if (el.id === 'btn-sozonivka') {
+                            if (typeof setMode === 'function') setMode('sozonivka');
                         }
                     }
                 };
 
-                el.addEventListener('touchstart', press, { passive: false });
+                el.addEventListener('touchstart', press, { passive: true });
                 el.addEventListener('touchend', release);
                 el.addEventListener('mousedown', press);
                 el.addEventListener('mouseup', release);
-                el.addEventListener('mouseleave', release);
             });
         });
     </script>
-
 </body>
 
 </html>
