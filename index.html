@@ -337,7 +337,8 @@
         }
 
         /* Прибираємо праву лінію в останній колонці */
-        th:last-child, td:last-child {
+        th:last-child,
+        td:last-child {
             border-right: none;
         }
 
@@ -536,27 +537,35 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const interactiveElements = document.querySelectorAll('#timer-block button, .share-btn, .sw-btn');
+            // Додаємо відстеження на кнопку календаря окремо, щоб уникнути конфліктів
+            const calBtn = document.getElementById('calBtn');
+            const interactiveElements = document.querySelectorAll('.share-btn, .sw-btn, #calBtn');
 
             interactiveElements.forEach(el => {
-                const press = () => {
+                const press = (e) => {
+                    // Запобігаємо «стрибкам» сторінки та зайвим фокусам
+                    if (e.type === 'touchstart') e.preventDefault();
+
                     el.style.transform = 'scale(0.97)';
                     el.style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
                     el.style.transition = 'none';
                 };
 
-                const release = () => {
+                const release = (e) => {
                     setTimeout(() => {
                         el.style.transform = '';
                         el.style.backgroundColor = '';
                         el.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.2s ease';
                     }, 80);
+
+                    // Якщо це був клік по кнопці нагадування, викликаємо функцію вручну
+                    if (el.id === 'calBtn' && (e.type === 'touchend' || e.type === 'mouseup')) {
+                        if (typeof addToCalendar === 'function') addToCalendar();
+                    }
                 };
 
-                el.addEventListener('touchstart', press, { passive: true });
+                el.addEventListener('touchstart', press, { passive: false });
                 el.addEventListener('touchend', release);
-                el.addEventListener('touchmove', release);
-
                 el.addEventListener('mousedown', press);
                 el.addEventListener('mouseup', release);
                 el.addEventListener('mouseleave', release);
